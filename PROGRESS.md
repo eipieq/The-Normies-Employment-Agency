@@ -6,6 +6,46 @@ format: date, agent, what shipped, what's next, blockers.
 
 ---
 
+## 2026-05-20 (claude) — phase 3 in progress (handing off)
+
+shipped this session:
+
+- decision locked: use **venice ai** instead of direct anthropic for persona generation. venice's openai-compatible api proxies many models including claude. default model: **`claude-opus-4-7`** (venice flagship tier, $30/1m out, user has credits)
+- swapped `@ai-sdk/anthropic` for `@ai-sdk/openai-compatible@2.0.47`
+- installed `tsx` + `dotenv-cli` as devdeps (tsx doesn't auto-load `.env.local`, so all scripts need `dotenv -e .env.local --` prefix)
+- env: `.env.example` template at `web/.env.example` lists all needed vars. `.env.local` exists locally with the user's venice key (gitignored). `.env*` blanket-ignored in /web/.gitignore but `!.env.example` exception added so the template gets committed.
+
+**security note for next agent**: user pasted their venice key into `.env.example` by accident at one point. file is gitignored at that moment so nothing leaked into git. user was asked to rotate the key at https://venice.ai/settings/api and re-paste into `.env.local`. *verify with user whether they rotated before relying on the key for anything sensitive*. if they did rotate, the new key should be in `.env.local`.
+
+what is *not* yet done in phase 3:
+
+- write the persona module under `web/src/lib/persona/`:
+  - `types.ts` — `Persona` shape: `{ jobTitle, oneLiner, workStyle, strengths[], blindSpots[], systemPrompt }`
+  - `brief.ts` — the agency's stable system prompt (the "brief"). this is what tells the LLM to act as the placement officer, use the structured features as evidence, and write in our voice.
+  - `generator.ts` — `generatePersona(features: NormieFeatures): Promise<Persona>` using ai sdk's `generateObject` with a zod schema. temp 0. model: `claude-opus-4-7`. provider via `createOpenAICompatible({ name: 'venice', baseURL: 'https://api.venice.ai/api/v1', apiKey: process.env.VENICE_API_KEY! })`.
+  - `cache.ts` — simple key/value cache keyed by `${tokenId}:${canvasVersion}`. **start with a filesystem cache** writing to `web/.cache/personas/${key}.json` (gitignore `.cache`). swap to a hosted KV later. NOTE: `@vercel/kv` is sunset per the vercel-storage skill that auto-loaded this session. when we get to prod, provision **Upstash Redis via Vercel Marketplace** instead.
+  - `index.ts` — barrel + `getPersona(tokenId)` orchestrator that calls `loadFeatures` (phase 2), checks cache, generates if miss, stores, returns.
+- write `web/scripts/persona-smoke.ts` — pick 2-3 fixture token ids, run `getPersona` on each, print job title + one-liner + first 500 chars of system prompt.
+- update `web/package.json` scripts:
+  - `"smoke": "dotenv -e .env.local -- tsx scripts/smoke.ts"` (fix existing — it currently uses tsx without dotenv, so VENICE_API_KEY would be undefined)
+  - `"persona-smoke": "dotenv -e .env.local -- tsx scripts/persona-smoke.ts"` (new)
+- run persona-smoke end-to-end to confirm venice + claude-opus-4-7 returns sensible structured output
+- consider adding retry/backoff to the api client wrapper in `web/src/lib/normies/api.ts` — saw one 502 on token #42 during phase 2 smoke. wrap the inner `fetch` in a simple retry with exponential backoff.
+
+hybrid persona logic (from PLAN.md, do this in `generator.ts`):
+
+- if `features.agent` is not null (normie is erc-8004 registered), use `features.agent.name` and `features.agent.type` as the name + type anchors in the prompt
+- if null, the generator invents a name and uses trait byte 0 (already in `features.traits` as the "Type" attribute) for type
+- everything else (job, system prompt, work style) is always our own from raw data
+
+writing style for the generated personas: lowercase, dry employment-agency humor, short sentences. read the brief carefully — the LLM needs to know our voice or it'll generate generic copy.
+
+blockers:
+
+- needs the venice key to be live in `.env.local` for end-to-end test. if user has rotated, the new key should already be there. if not, ask before running smoke.
+
+---
+
 ## 2026-05-20 (claude) — phase 2 complete
 
 shipped:
