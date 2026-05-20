@@ -11,6 +11,9 @@ importers:
       '@ai-sdk/openai-compatible':
         specifier: ^2.0.47
         version: 2.0.47(zod@4.4.3)
+      '@phosphor-icons/react':
+        specifier: ^2.1.10
+        version: 2.1.10(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@rainbow-me/rainbowkit':
         specifier: ^2.2.11
         version: 2.2.11(@tanstack/react-query@5.100.11(react@19.2.4))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(typescript@5.9.3)(viem@2.50.4(typescript@5.9.3)(zod@4.4.3))(wagmi@3.6.15(@tanstack/query-core@5.100.11)(@tanstack/react-query@5.100.11(react@19.2.4))(@types/react@19.2.14)(react@19.2.4)(typescript@5.9.3)(viem@2.50.4(typescript@5.9.3)(zod@4.4.3)))
@@ -539,6 +542,13 @@ packages:
   '@opentelemetry/api@1.9.1':
     resolution: {integrity: sha512-gLyJlPHPZYdAk1JENA9LeHejZe1Ti77/pTeFm/nMXmQH/HFZlcS/O2XJB+L8fkbrNSqhdtlvjBVjxwUYanNH5Q==}
     engines: {node: '>=8.0.0'}
+
+  '@phosphor-icons/react@2.1.10':
+    resolution: {integrity: sha512-vt8Tvq8GLjheAZZYa+YG/pW7HDbov8El/MANW8pOAz4eGxrwhnbfrQZq0Cp4q8zBEu8NIhHdnr+r8thnfRSNYA==}
+    engines: {node: '>=10'}
+    peerDependencies:
+      react: '>= 16.8'
+      react-dom: '>= 16.8'
 
   '@radix-ui/number@1.1.1':
     resolution: {integrity: sha512-MkKCwxlXTgz6CFoJx3pCwn07GKp36+aZyu/u2Ln2VrA5DcdyCZkASEDBTd8x5whTQQL5CiYf4prXKLcgQdv29g==}
@@ -2244,6 +2254,11 @@ snapshots:
   '@noble/hashes@1.8.0': {}
 
   '@opentelemetry/api@1.9.1': {}
+
+  '@phosphor-icons/react@2.1.10(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
+    dependencies:
+      react: 19.2.4
+      react-dom: 19.2.4(react@19.2.4)
 
   '@radix-ui/number@1.1.1': {}
 

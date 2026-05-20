@@ -6,6 +6,36 @@ format: date, agent, what shipped, what's next, blockers.
 
 ---
 
+## 2026-05-20 (cursor) — phase 4 complete
+
+shipped:
+
+- `web/src/app/works/[id]/page.tsx` — server component. loads features + persona (single `loadFeatures` call shared via the updated `getPersona(tokenId, features?)` signature). 404s on unminted/out-of-range ids. generates full `<head>` metadata including og tags.
+- `web/src/components/employment-card.tsx` — the employment card. portrait panel (neutral-100 bg), job title, one-liner, archetype meta row, canvas history note, gated section placeholder (lock icon + "connect wallet"), share button.
+- `web/src/components/normie-portrait.tsx` — renders the 40x40 pixel bitmap as a crisp SVG. also exports `pixelsToDataUrl` for the OG route (converts to base64 svg data url).
+- `web/src/components/share-button.tsx` — client component. builds the x.com/intent/post url with job title + one-liner + page url.
+- `web/src/app/works/[id]/opengraph-image.tsx` — next/og image at 1200x630. loads Inter Medium + Regular from bunny fonts. layout: portrait panel (left, 460px, #e8e8e8 bg, portrait at 320x320) + content panel (right, job title at 52px, one-liner at 20px, bottom row with token id + category). uses the normie's pixel art via data url.
+- `web/src/app/works/[id]/not-found.tsx` — clean 404 page.
+- updated `getPersona` to accept optional pre-loaded `NormieFeatures` to avoid double-fetching in the page.
+- phosphor-icons/react installed.
+
+all routes confirmed: /works/6303 → 200, /works/99999 → 404, /works/6303/opengraph-image → 200.
+
+design notes:
+- no placeholder wordmark needed — typography carries the card cleanly with geist + design guide tokens.
+- employment card is deliberately quiet. lock icon + neutral-50 panel for the gated section telegraphs "something's here" without being decorative.
+
+next:
+
+- **phase 5: auth + gating**. rainbowkit connect modal, siwe flow (nonce endpoint, verify endpoint, iron-session cookie), ownership gate helper. gated panel on the card reveals when ownership is verified.
+
+blockers:
+
+- needs walletconnect project id (`NEXT_PUBLIC_WC_PROJECT_ID`) for rainbowkit. get from https://cloud.reown.com. add to `.env.local`.
+- pnpm 11 `approve-builds` needs to be run manually once to allow esbuild + sharp build scripts. run `pnpm approve-builds` in web/ and toggle esbuild + sharp on. dev server can be started directly via `./node_modules/.bin/next dev` as a workaround.
+
+---
+
 ## 2026-05-20 (cursor) — phase 3 complete
 
 shipped:
