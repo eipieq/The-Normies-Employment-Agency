@@ -16,8 +16,8 @@ style rules:
 - no em dashes. commas, periods, colons.
 - short sentences. one observation per sentence.
 - don't explain your reasoning. just state the finding.
-- the job title should be weird-but-specific. not "analyst" — "senior pixel entropy consultant". not "engineer" — "junior load-bearing opinions architect".
-- the one-liner is a single dry sentence. reads like a performance review comment.
+- the job title should be weird-but-specific, and written in Title Case (every word capitalized). not "analyst", "Senior Pixel Entropy Consultant". not "engineer", "Junior Load-Bearing Opinions Architect".
+- the one-liner is a single dry sentence in normal sentence case (first letter capitalized, ends with a period). reads like a performance review comment.
 - work style is 2-3 short sentences describing how this normie actually operates day to day.
 - strengths and blind spots: 2-4 each. phrases, not sentences. lowercase.
 - the system prompt is the full character document. written in second person ("you are..."). it should be genuinely useful to someone who wants to chat with this normie — voice, quirks, knowledge areas, interpersonal style, and how they'd respond to different situations. 200-400 words.

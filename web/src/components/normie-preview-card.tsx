@@ -12,20 +12,20 @@ export function NormiePreviewCard({ tokenId, pixels, jobTitle, oneLiner }: Props
   return (
     <Link
       href={`/works/${tokenId}`}
-      className="group block bg-white rounded-xl shadow-[0_1px_4px_rgba(0,0,0,0.06)] hover:shadow-[0_2px_8px_rgba(0,0,0,0.09)] transition-shadow overflow-hidden"
+      className="group block bg-white rounded-xl p-1 space-y-1 shadow-[0_1px_4px_rgba(0,0,0,0.06)] hover:shadow-[0_2px_8px_rgba(0,0,0,0.09)] transition-shadow"
     >
-      {/* portrait */}
-      <div className="bg-neutral-100 flex items-center justify-center py-6">
-        <NormiePortrait pixels={pixels} size={120} />
+      {/* image section */}
+      <div className="bg-neutral-100 rounded-t-[10px] rounded-b-[5px] aspect-square overflow-hidden">
+        <NormiePortrait pixels={pixels} className="block w-full h-full" />
       </div>
 
-      {/* content */}
-      <div className="p-3.5 space-y-1.5">
-        <p className="text-sm text-neutral-400 tabular-nums">
+      {/* text section */}
+      <div className="bg-neutral-100 rounded-t-[5px] rounded-b-[10px] p-3.5 space-y-2">
+        <p className="font-mono text-sm text-neutral-400 tabular-nums">
           #{String(tokenId).padStart(4, "0")}
         </p>
-        <p className="text-lg font-medium text-neutral-900 leading-snug">{jobTitle}</p>
-        <p className="text-sm text-neutral-500 leading-relaxed line-clamp-2">{oneLiner}</p>
+        <p className="font-pixel-square text-lg text-neutral-900 leading-snug capitalize">{jobTitle}</p>
+        <p className="font-normal text-[15px] text-neutral-500 leading-relaxed line-clamp-2 first-letter:uppercase">{oneLiner}</p>
       </div>
     </Link>
   );

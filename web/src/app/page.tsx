@@ -44,9 +44,9 @@ export default async function Home() {
 
       {/* examples */}
       {examples.length > 0 && (
-        <section id="examples" className="px-6 pb-16">
-          <div className="max-w-3xl mx-auto">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <section id="examples" className="px-6 pt-8 pb-32">
+          <div className="max-w-4xl mx-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-start">
               {examples.map(({ id, features, persona }) => (
                 <NormiePreviewCard
                   key={id}
@@ -62,7 +62,7 @@ export default async function Home() {
       )}
 
       {/* how it works */}
-      <section className="px-6 pb-16">
+      <section className="px-6 pb-32">
         <div className="max-w-3xl mx-auto">
           <div className="bg-neutral-100 rounded-2xl p-6 grid grid-cols-1 sm:grid-cols-3 gap-6">
             <div className="space-y-1.5">
