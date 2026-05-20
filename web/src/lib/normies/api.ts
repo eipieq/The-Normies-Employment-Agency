@@ -19,8 +19,22 @@ export class NormiesApiError extends Error {
   }
 }
 
+function sleep(ms: number) {
+  return new Promise((r) => setTimeout(r, ms));
+}
+
+// retry on 5xx (transient upstream failures). 3 attempts, ~300ms / ~600ms backoff.
+async function fetchWithRetry(url: string, init: RequestInit, retries = 3): Promise<Response> {
+  for (let i = 0; i < retries; i++) {
+    const res = await fetch(url, init);
+    if (res.ok || res.status < 500) return res;
+    if (i < retries - 1) await sleep(300 * 2 ** i);
+  }
+  return fetch(url, init);
+}
+
 async function getJson<T>(path: string, opts: FetchOpts = {}): Promise<T> {
-  const res = await fetch(`${BASE}${path}`, {
+  const res = await fetchWithRetry(`${BASE}${path}`, {
     next: { revalidate: opts.revalidate ?? 300, tags: opts.tags ?? [] },
   });
   if (!res.ok) throw new NormiesApiError(res.status, path);
@@ -28,7 +42,7 @@ async function getJson<T>(path: string, opts: FetchOpts = {}): Promise<T> {
 }
 
 async function getText(path: string, opts: FetchOpts = {}): Promise<string> {
-  const res = await fetch(`${BASE}${path}`, {
+  const res = await fetchWithRetry(`${BASE}${path}`, {
     next: { revalidate: opts.revalidate ?? 300, tags: opts.tags ?? [] },
   });
   if (!res.ok) throw new NormiesApiError(res.status, path);

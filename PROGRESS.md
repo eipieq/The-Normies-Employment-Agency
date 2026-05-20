@@ -6,6 +6,35 @@ format: date, agent, what shipped, what's next, blockers.
 
 ---
 
+## 2026-05-20 (cursor) — phase 3 complete
+
+shipped:
+
+- `web/src/lib/persona/` — types, agency brief (stable system prompt), generator, fs cache, orchestrator (`getPersona`)
+- generator uses `generateText` + manual JSON parse/zod validate. venice's openai-compatible endpoint doesn't support structured outputs or tool call mode — worked around with explicit JSON instructions in the prompt + code-fence stripping. works reliably.
+- persona quality confirmed: the brief is landing. #1 "junior trail-state continuity steward", #100 "principal emeritus of unfashionable certainties", #1337 "senior loss prevention specialist, unspecified inventory". voice is dry, specific, correct.
+- fs cache at `web/.cache/personas/<tokenId>-<canvasVersion>.json` (gitignored). swap for upstash redis at deploy time.
+- `web/scripts/persona-smoke.ts` + `pnpm persona-smoke` script added.
+- retry/backoff (3 attempts, 300ms/600ms exp) added to normies api client for 5xx transients.
+- `zod` installed as dep. typecheck clean.
+
+friction notes:
+
+- `generateObject` / structured outputs don't work with venice's openai-compatible endpoint. `mode: 'tool'` also fails. `generateText` + JSON parsing is the reliable path.
+- system `dotenv` binary has a different CLI syntax than `dotenv-cli`. pnpm scripts resolve fine via `node_modules/.bin`; direct shell invocations need the local binary path.
+- pnpm 11 `approve-builds` is interactive and can't run in automation. `pnpm.onlyBuiltDependencies` in package.json covers it, but the sandbox strips the store path — run `pnpm approve-builds` manually once if fresh install is needed.
+
+next:
+
+- **phase 4: public card**. `/works/[id]` page, employment card component (the design showpiece), og image route via next/og, share button. needs: normie works mark + og card design from design brief.
+
+blockers:
+
+- normie works mark + og share card design (DESIGN_BRIEF.md). hard blocker for phase 4. currently in anil's court.
+- `pnpm persona-smoke` works but slow (~55s for 3 normies due to sequential venice calls). acceptable for now.
+
+---
+
 ## 2026-05-20 (claude) — phase 3 in progress (handing off)
 
 shipped this session:

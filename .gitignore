@@ -5,6 +5,7 @@ dist
 build
 .turbo
 .vercel
+.pnpm-store
 
 .env
 .env.local
