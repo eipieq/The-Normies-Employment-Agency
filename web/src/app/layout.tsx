@@ -3,6 +3,7 @@ import { Plus_Jakarta_Sans, Geist_Mono, Instrument_Sans } from "next/font/google
 import localFont from "next/font/local";
 import { Providers } from "@/components/providers";
 import { Header } from "@/components/header";
+import { Footer } from "@/components/footer";
 import "./globals.css";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
@@ -46,6 +47,7 @@ export default function RootLayout({
         <Providers>
           <Header />
           {children}
+          <Footer />
         </Providers>
       </body>
     </html>

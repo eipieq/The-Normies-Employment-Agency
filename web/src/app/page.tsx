@@ -5,7 +5,7 @@ import { PillButtonLink } from "@/components/pill-button";
 
 export const revalidate = 3600;
 
-const EXAMPLES = [1, 42, 100, 420, 1337, 2000, 3059, 6303];
+const EXAMPLES = [1, 42, 100, 420, 2187, 2000, 3059, 6303];
 
 async function loadExample(id: number) {
   const features = await loadFeatures(id);
@@ -60,27 +60,28 @@ export default async function Home() {
       {/* how it works */}
       <section className="px-6 pb-32">
         <div className="max-w-3xl mx-auto">
-          <div className="bg-neutral-100 rounded-2xl p-6 grid grid-cols-1 sm:grid-cols-3 gap-6">
-            <div className="space-y-1.5">
-              <p className="text-sm font-semibold text-neutral-900">01. Read the dossier</p>
-              <p className="text-sm text-neutral-500 leading-relaxed">
-                Pixel density, spatial distribution, trait combinations, canvas edit history.
-                Every normie's data tells a different story.
-              </p>
-            </div>
-            <div className="space-y-1.5">
-              <p className="text-sm font-semibold text-neutral-900">02. Place them in a role</p>
-              <p className="text-sm text-neutral-500 leading-relaxed">
-                An AI placement officer reads the dossier and assigns a job title, one-liner,
-                work style, strengths, and blind spots.
-              </p>
-            </div>
-            <div className="space-y-1.5">
-              <p className="text-sm font-semibold text-neutral-900">03. Meet your coworker</p>
-              <p className="text-sm text-neutral-500 leading-relaxed">
-                Connect your wallet to verify ownership. Unlock the full employment profile
-                and open a chat with your normie.
-              </p>
+          <div className="bg-white rounded-xl shadow-[0_1px_4px_rgba(0,0,0,0.06)] p-1">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-1">
+              {[
+                { step: "01", title: "Read the dossier", body: "Pixel density, spatial distribution, trait combinations, canvas edit history. Every normie's data tells a different story." },
+                { step: "02", title: "Place them in a role", body: "An AI placement officer reads the dossier and assigns a job title, one-liner, work style, strengths, and blind spots." },
+                { step: "03", title: "Meet your coworker", body: "Connect your wallet to verify ownership. Unlock the full employment profile and open a chat with your normie." },
+              ].map(({ step, title, body }, i, arr) => (
+                <div
+                  key={step}
+                  className={`bg-neutral-100 p-3.5 space-y-2 ${
+                    i === 0
+                    ? "rounded-tl-[10px] rounded-tr-[10px] rounded-br-[5px] rounded-bl-[5px] sm:rounded-tl-[10px] sm:rounded-tr-[5px] sm:rounded-br-[5px] sm:rounded-bl-[10px]"
+                    : i === arr.length - 1
+                    ? "rounded-tl-[5px] rounded-tr-[5px] rounded-br-[10px] rounded-bl-[10px] sm:rounded-tl-[5px] sm:rounded-tr-[10px] sm:rounded-br-[10px] sm:rounded-bl-[5px]"
+                    : "rounded-[5px]"
+                  }`}
+                >
+                  <p className="font-mono text-sm text-neutral-400">{step}</p>
+                  <p className="font-pixel-square text-base text-neutral-900">{title}</p>
+                  <p className="text-sm font-medium text-neutral-500 leading-relaxed">{body}</p>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -89,14 +90,16 @@ export default async function Home() {
       {/* coming soon */}
       <section className="px-6 pb-20">
         <div className="max-w-3xl mx-auto">
-          <div className="border border-neutral-100 rounded-2xl px-6 py-5 flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-neutral-500">More features coming</p>
-              <p className="text-sm text-neutral-400 mt-0.5">
-                Normie works is the first feature. Payroll, performance reviews, and the union are next.
-              </p>
+          <div className="bg-white rounded-xl shadow-[0_1px_4px_rgba(0,0,0,0.06)] p-1">
+            <div className="bg-neutral-100 rounded-[10px] p-3.5 flex items-center justify-between">
+              <div className="space-y-1">
+                <p className="font-pixel-square text-base text-neutral-900">More features coming</p>
+                <p className="text-sm font-medium text-neutral-500">
+                  Normie works is the first feature. Payroll, performance reviews, and the union are next.
+                </p>
+              </div>
+              <p className="text-sm font-medium text-neutral-400 shrink-0 ml-4">Soon™</p>
             </div>
-            <p className="text-sm text-neutral-300 shrink-0 ml-4">Soon™</p>
           </div>
         </div>
       </section>

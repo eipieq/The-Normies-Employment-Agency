@@ -56,7 +56,7 @@ export function GatedPanel({ tokenId }: { tokenId: number }) {
   // unauthenticated: show connect/sign button
   if (authStatus === "loading" || authStatus === "unauthenticated" || status === "idle") {
     return (
-      <div className="rounded-lg bg-neutral-50 border border-neutral-100 p-3.5 space-y-3">
+      <div className="rounded-[5px] bg-neutral-50 p-3.5 space-y-3">
         <div className="flex items-start gap-2.5">
           <Lock size={16} className="text-neutral-300 mt-0.5 shrink-0" />
           <div className="space-y-0.5">
@@ -89,7 +89,7 @@ export function GatedPanel({ tokenId }: { tokenId: number }) {
   // connected + loading
   if (status === "loading") {
     return (
-      <div className="rounded-lg bg-neutral-50 border border-neutral-100 p-3.5">
+      <div className="rounded-[5px] bg-neutral-50 p-3.5">
         <p className="text-sm text-neutral-400">verifying ownership...</p>
       </div>
     );
@@ -98,7 +98,7 @@ export function GatedPanel({ tokenId }: { tokenId: number }) {
   // connected but not the owner
   if (status === "not-owner") {
     return (
-      <div className="rounded-lg bg-neutral-50 border border-neutral-100 p-3.5 flex items-start gap-2.5">
+      <div className="rounded-[5px] bg-neutral-50 p-3.5 flex items-start gap-2.5">
         <Lock size={16} className="text-neutral-300 mt-0.5 shrink-0" />
         <div className="space-y-0.5">
           <p className="text-sm font-medium text-neutral-500">not your normie</p>
@@ -113,7 +113,7 @@ export function GatedPanel({ tokenId }: { tokenId: number }) {
   // error
   if (status === "error") {
     return (
-      <div className="rounded-lg bg-neutral-50 border border-neutral-100 p-3.5">
+      <div className="rounded-[5px] bg-neutral-50 p-3.5">
         <p className="text-sm text-neutral-400">something went wrong. try refreshing.</p>
       </div>
     );

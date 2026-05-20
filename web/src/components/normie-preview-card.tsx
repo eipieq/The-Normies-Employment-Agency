@@ -20,7 +20,7 @@ export function NormiePreviewCard({ tokenId, pixels, jobTitle, oneLiner }: Props
       </div>
 
       {/* text section */}
-      <div className="bg-neutral-100 rounded-t-[5px] rounded-b-[10px] p-3.5 space-y-2">
+      <div className="bg-neutral-100 rounded-t-[5px] rounded-b-[10px] px-3.5 py-4 space-y-2">
         <p className="font-mono text-sm text-neutral-400 tabular-nums">
           #{String(tokenId).padStart(4, "0")}
         </p>

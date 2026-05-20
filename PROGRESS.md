@@ -42,6 +42,21 @@ design-guide drift (now reflected in AGENTS.md):
 
 ---
 
+## 2026-05-21 (cursor) — ui polish round 2
+
+shipped:
+
+- employment card: 4 sub-containers, chips for meta/tags, pixel-square title 24px, X share button (black, svg logo), agency logo in footer.
+- how-it-works section + coming-soon redesigned to match card pattern (white shell, neutral-100 sub-containers, font-pixel-square titles, font-mono step numbers).
+- footer: instrument sans logo left, normies.art + adsq.me signature right.
+- persona brief updated: normal sentence case rules, removed "lowercase throughout" override.
+- preview card text section: slightly more vertical padding.
+- example normies: swapped #1337 for #2187.
+
+next: phase 6 (chat surface).
+
+---
+
 ## 2026-05-20 (cursor) — ui polish: homepage, nav, cards
 
 shipped:
