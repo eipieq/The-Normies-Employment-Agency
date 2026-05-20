@@ -1,11 +1,11 @@
 import { loadFeatures } from "@/lib/normies";
 import { getPersona } from "@/lib/persona";
-import { NormiePreviewCard } from "@/components/normie-preview-card";
+import { CardsMarquee } from "@/components/cards-marquee";
 import { PillButtonLink } from "@/components/pill-button";
 
 export const revalidate = 3600;
 
-const EXAMPLES = [1, 100, 1337];
+const EXAMPLES = [1, 42, 100, 420, 1337, 2000, 3059, 6303];
 
 async function loadExample(id: number) {
   const features = await loadFeatures(id);
@@ -14,7 +14,8 @@ async function loadExample(id: number) {
 }
 
 export default async function Home() {
-  const examples = await Promise.all(EXAMPLES.map(loadExample)).catch(() => []);
+  const results = await Promise.allSettled(EXAMPLES.map(loadExample));
+  const examples = results.flatMap(r => r.status === "fulfilled" ? [r.value] : []);
 
   return (
     <main className="flex flex-1 flex-col">
@@ -44,20 +45,15 @@ export default async function Home() {
 
       {/* examples */}
       {examples.length > 0 && (
-        <section id="examples" className="px-6 pt-8 pb-32">
-          <div className="max-w-4xl mx-auto">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-start">
-              {examples.map(({ id, features, persona }) => (
-                <NormiePreviewCard
-                  key={id}
-                  tokenId={id}
-                  pixels={features.pixels}
-                  jobTitle={persona.jobTitle}
-                  oneLiner={persona.oneLiner}
-                />
-              ))}
-            </div>
-          </div>
+        <section id="examples" className="pt-8 pb-32">
+          <CardsMarquee
+            cards={examples.map(({ id, features, persona }) => ({
+              id,
+              pixels: features.pixels,
+              jobTitle: persona.jobTitle,
+              oneLiner: persona.oneLiner,
+            }))}
+          />
         </section>
       )}
 

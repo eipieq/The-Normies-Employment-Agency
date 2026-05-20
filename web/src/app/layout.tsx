@@ -42,10 +42,7 @@ export default function RootLayout({
       lang="en"
       className={`${plusJakartaSans.variable} ${geistMono.variable} ${geistPixelSquare.variable} ${instrumentSans.variable} h-full antialiased`}
     >
-      <body
-        className="min-h-full flex flex-col bg-neutral-100 text-foreground"
-        style={{ backgroundImage: "url(/debut-light.png)", backgroundRepeat: "repeat" }}
-      >
+      <body className="min-h-full flex flex-col bg-white text-foreground">
         <Providers>
           <Header />
           {children}

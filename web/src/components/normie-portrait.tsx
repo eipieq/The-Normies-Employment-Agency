@@ -27,9 +27,8 @@ export function NormiePortrait({ pixels, size = 200, className }: Props) {
   return (
     <svg
       viewBox="0 0 40 40"
-      width={size}
-      height={size}
-      style={{ imageRendering: "pixelated" }}
+      width="100%"
+      style={{ imageRendering: "pixelated", display: "block" }}
       className={className}
       aria-hidden="true"
     >

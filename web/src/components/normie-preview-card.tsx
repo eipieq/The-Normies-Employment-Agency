@@ -15,8 +15,8 @@ export function NormiePreviewCard({ tokenId, pixels, jobTitle, oneLiner }: Props
       className="group block bg-white rounded-xl p-1 space-y-1 shadow-[0_1px_4px_rgba(0,0,0,0.06)] hover:shadow-[0_2px_8px_rgba(0,0,0,0.09)] transition-shadow"
     >
       {/* image section */}
-      <div className="bg-neutral-100 rounded-t-[10px] rounded-b-[5px] aspect-square overflow-hidden">
-        <NormiePortrait pixels={pixels} className="block w-full h-full" />
+      <div className="bg-neutral-100 rounded-t-[10px] rounded-b-[5px] overflow-hidden">
+        <NormiePortrait pixels={pixels} className="block w-full" />
       </div>
 
       {/* text section */}

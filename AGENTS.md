@@ -75,19 +75,26 @@ key endpoints for normie works:
 
 soft, information-dense, zero decoration. if an element doesn't carry information, it shouldn't exist.
 
-- page bg: white
-- containers/panels: neutral-100 (~#f5f5f5), rounded-2xl
+- page bg: neutral-100 with `debut-light.png` tiled (subtle paper-grain texture) applied on `<body>`
+- containers/panels: neutral-100, rounded-2xl
 - cards: white, rounded-xl, shadow `0 1px 4px rgba(0,0,0,0.06)`. depth from shadow, not color.
 - default ui: neutral-400 (icons, labels, placeholders)
 - text: neutral-900 titles, neutral-800 headers, neutral-500/400 secondary, neutral-300 disabled
-- accents: soft, desaturated. indigo-300 for primary icons.
+- accents: saturated blue. `--primary` = `oklch(0.52 0.22 264)`. used by `PillButton` primary variant and the connect button.
 - status: *-50 bg with *-500 text. red=high, blue=normal, emerald=low, orange=urgent
-- font: Ronzino or geometric/humanist sans. base 16px, letter-spacing -0.02em globally.
+- fonts: **plus jakarta sans** for body sans (`--font-sans`). **geist mono** for code + numerals (`--font-mono`). **geist pixel square** for display via `.font-pixel-square` (hero h1, preview card titles). **instrument sans** for the header wordmark. base 16px, no global letter-spacing override.
+- text size floor: **14px** (`text-sm`). nothing smaller renders anywhere.
 - weights: semibold for column labels, medium for card titles + interactive labels, regular elsewhere.
 - icons: phosphor, weight="regular", 20px.
 - spacing: containers 8px horizontal padding, cards p-3.5.
+- buttons: `PillButton` / `PillButtonLink` with `variant="primary" | "secondary"`. primary is recessed two-layer (outer border + inner filled blue). secondary is a single-layer flat pill on `bg-card` with `border-black/10`.
 
-exception: the employment card on the share image is the one place we can be louder. it has to stop people in a twitter feed.
+writing case:
+
+- house style is lowercase (see writing-style guidance above).
+- **exception**: product-facing marketing copy on the homepage uses normal sentence/title case ("Your normie got a job.", "Explore the Talented Normies"). this is a deliberate per-surface choice, not a global shift.
+
+exception (visual loudness): the employment card on the share image is the one place we can be louder. it has to stop people in a twitter feed.
 
 ## workflow
 

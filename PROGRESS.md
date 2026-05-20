@@ -6,6 +6,58 @@ format: date, agent, what shipped, what's next, blockers.
 
 ---
 
+## 2026-05-20 (claude) — homepage visual refresh + preview card redesign
+
+shipped:
+
+- **paper-grain background**: `debut-light.png` (subtle pattern asset from atle mo's subtle patterns set) tiled on `<body>` in `layout.tsx`. base bg `bg-neutral-100`. self-hosted at `/public/debut-light.png`. no overlay div / z-index gymnastics needed.
+- **primary color swap**: indigo-300 → saturated blue. `--primary` now `oklch(0.52 0.22 264)` in both `:root` and `.dark` in `globals.css`. `--ring` matches.
+- **sans font swap**: geist → **plus jakarta sans** via `next/font/google` with var `--font-plus-jakarta-sans`. `globals.css` `--font-sans` updated to literal "Plus Jakarta Sans". geist mono kept for code/numerals, instrument sans kept for the header wordmark (user added it intentionally between sessions).
+- **PillButton variant system**: `variant: "primary" | "secondary"` prop on both `PillButton` and `PillButtonLink`. primary is the recessed two-layer pill (outer border + inner filled). secondary is a single-layer flat pill (h-[34px], bg-card, border-black/10, neutral-900 text) — fixes the "underline in a box" artifact you get from forcing white-on-white on the primary structure.
+- **connect button restyled** to share the pill aesthetic. uses `bg-primary` (so it picks up the new blue), `bg-red-500` for wrong-network, `bg-neutral-100` for connected/account state. user did this themselves between sessions; left as-is.
+- **14px text floor**: swept every `text-xs` / `text-[10–13px]` to `text-sm` across page.tsx, not-found.tsx, pill-button.tsx, normie-preview-card.tsx, employment-card.tsx, gated-panel.tsx, ui/button.tsx. no element renders below 14px. user policy: "no page or element should have font smaller than 14px".
+- **homepage copy** in normal/title case (per-page exception to the lowercase house style — see writing-style memory). hero h1 "Your normie got a job." subhead in sentence case. primary CTA "Explore the Talented Normies" (title case). secondary CTA "Explore on OpenSea" → `https://opensea.io/collection/normies`, opens in new tab. "how it works" steps + coming-soon block all in sentence case.
+- **homepage layout**: examples grid widened to `max-w-4xl` (cards ~288px on sm+). grid uses `items-start` so cards hug their own content instead of stretching. vertical rhythm bumped — `pt-8 pb-32` on the examples section, `pb-32` on "how it works".
+- **preview card redesign** (`normie-preview-card.tsx`): white outer container with rounded-xl + shadow. inside, two `bg-neutral-100` tiles with rounded inner edges (`rounded-t-[10px] rounded-b-[5px]` on image, mirrored on text), `p-1` outer padding + `space-y-1` between tiles so the outer white shows as a 4px seam. image tile fills edge-to-edge with `overflow-hidden` clipping the SVG to the tile radii. text tile uses `p-3.5 space-y-2`.
+- **preview card typography**: token id (`font-mono`, geist mono, neutral-400, tabular-nums), job title (`font-pixel-square`, text-lg, neutral-900, `capitalize` for cached lowercase data), one-liner (`font-normal text-[15px]`, neutral-500, `first-letter:uppercase` for cached lowercase). category prop removed entirely.
+- **persona brief updated** (`lib/persona/brief.ts`): instructs **Title Case** for `jobTitle` and **sentence case** for `oneLiner` with corrected examples. existing cached personas still display correctly thanks to the CSS pseudo-classes; future generations cache in the right shape.
+- two clean commits: `5ce1e0c` (homepage refresh) and `3eca3e5` (preview card redesign + spacing).
+
+next:
+
+- **phase 6: chat surface**. `/api/works/chat/[id]` streaming endpoint + `/works/[id]/chat` ui. uses the generated `systemPrompt`, `streamText` from ai sdk, venice provider. per-session rate limit.
+- **phase 7: roster**. `/roster` page listing connected wallet's normies via `/holders/:address`.
+- **phase 8 remaining**: mobile pass, the employment card on `/works/[id]` itself (still uses the old quiet design — could pick up some of the new tile-based vocabulary), final share-card polish.
+
+blockers:
+
+- none. design direction is settling; ready for phase 6.
+
+design-guide drift (now reflected in AGENTS.md):
+
+- page bg: was white, now `bg-neutral-100` + tiled paper-grain texture.
+- primary accent: was indigo-300, now saturated blue `oklch(0.52 0.22 264)`.
+- font: was geist (placeholder for ronzino), now plus jakarta sans (body), instrument sans (header wordmark), geist mono (code/numerals), geist pixel square (display).
+- writing case: lowercase is still the house style for prose / docs / chat, but **product-facing marketing copy on the homepage uses normal/title case**. user-facing exception, not a global shift.
+
+---
+
+## 2026-05-20 (cursor) — ui polish: homepage, nav, cards
+
+shipped:
+
+- geist pixel square font loaded via next/font/local, applied to hero h1 and card job titles.
+- instrument sans for nav logo, medium weight, two-line, line-height 1.
+- base font 16px anchored on html element.
+- connect button consolidated into single CustomConnectButton component with color-by-state.
+- homepage marquee: 8 example normies, infinite scroll via css keyframe animation, Promise.allSettled for resilience.
+- employment card restructured into 4 sub-containers (image, info, gated, footer) matching preview card design language.
+- normie portrait SVG fills container naturally, overflow-hidden preserves radius.
+
+next: phase 6 (chat surface).
+
+---
+
 ## 2026-05-20 (cursor) — geist pixel square hero font
 
 shipped:
