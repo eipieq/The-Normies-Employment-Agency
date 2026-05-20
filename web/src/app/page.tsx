@@ -2,6 +2,7 @@ import { ArrowRight } from "@phosphor-icons/react/dist/ssr";
 import { loadFeatures } from "@/lib/normies";
 import { getPersona } from "@/lib/persona";
 import { NormiePreviewCard } from "@/components/normie-preview-card";
+import { PillButtonLink } from "@/components/pill-button";
 
 export const revalidate = 3600;
 
@@ -31,13 +32,10 @@ export default async function Home() {
           you get an employment card, a work profile, and a coworker to chat with.
         </p>
         <div className="flex items-center gap-2 mt-1">
-          <a
-            href="#examples"
-            className="inline-flex items-center gap-1.5 text-xs text-neutral-500 hover:text-neutral-700 transition-colors"
-          >
+          <PillButtonLink href="#examples">
             see some examples
-            <ArrowRight size={12} />
-          </a>
+            <ArrowRight size={13} />
+          </PillButtonLink>
         </div>
       </section>
 

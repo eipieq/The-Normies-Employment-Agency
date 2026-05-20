@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowUpRight } from "@phosphor-icons/react";
-import { Button } from "@/components/ui/button";
+import { PillButton } from "@/components/pill-button";
 
 type Props = {
   tokenId: number;
@@ -21,9 +21,9 @@ export function ShareButton({ tokenId, jobTitle, oneLiner }: Props) {
   }
 
   return (
-    <Button variant="outline" size="sm" onClick={share} className="gap-1.5">
-      <ArrowUpRight size={16} />
+    <PillButton onClick={share}>
+      <ArrowUpRight size={14} />
       share on x
-    </Button>
+    </PillButton>
   );
 }
