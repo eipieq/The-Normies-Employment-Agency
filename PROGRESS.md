@@ -6,6 +6,38 @@ format: date, agent, what shipped, what's next, blockers.
 
 ---
 
+## 2026-05-20 (cursor) — phase 5 complete
+
+shipped:
+
+- `SESSION_SECRET` generated and added to `.env.local`. `.env.example` already had the var.
+- `web/src/lib/session.ts` — iron-session config + `SessionData` type (`{ address?, nonce? }`).
+- `web/src/lib/ownership.ts` — `isOwner(tokenId, address)` always fetches live owner from normies API.
+- `web/src/lib/wagmi.ts` — wagmi config via `getDefaultConfig` from rainbowkit (chains: mainnet, ssr: true).
+- `web/src/lib/auth-context.tsx` — `AuthContext` + `useAuth()` hook. exposes `{ status, address, refresh }` to client tree.
+- `web/src/components/providers.tsx` — wagmi + queryClient + rainbowkit + auth context providers. fetches `/api/auth/status` on mount and after verify/signOut (via module-level `onAuthChange` callback). indigo-300 rainbowkit theme.
+- `web/src/components/header.tsx` — sticky header. left: agency name link. right: `ConnectButton` (address only, no balance, no chain badge).
+- `web/src/app/api/auth/nonce/route.ts` — GET. generates nonce, stores in session.
+- `web/src/app/api/auth/verify/route.ts` — POST. parses SIWE message, checks nonce, recovers signer address via `recoverMessageAddress` (viem, no RPC needed for EOA), stores address in session.
+- `web/src/app/api/auth/logout/route.ts` — POST. destroys session.
+- `web/src/app/api/auth/status/route.ts` — GET. returns `{ authenticated, address }` from session.
+- `web/src/app/api/works/persona/[id]/route.ts` — GET. 401 if no session, 403 if not owner (live ownership check), 200 with `{ workStyle, strengths, blindSpots, systemPrompt }` if verified owner.
+- `web/src/components/gated-panel.tsx` — client component. reads `useAuth()` status. idle/unauthenticated: connect button + lock. loading: "verifying...". not-owner: "not your normie". ready: work style, strengths/blind spots grid, system prompt with copy button.
+- updated `employment-card.tsx` to use `GatedPanel` instead of the static lock placeholder.
+- updated `layout.tsx` to wrap with `<Providers>` + `<Header>`.
+
+route smoke (sandbox-confirmed): nonce 200, status 200, persona-unauthed 401. typecheck clean.
+
+next:
+
+- **phase 6: chat surface**. `/api/works/chat/[id]` streaming endpoint, `/works/[id]/chat` ui. `useChat` from vercel ai sdk. per-session rate limit. the chat uses the generated system prompt as the character.
+
+blockers:
+
+- none. all phase 6 deps are installed (ai sdk, venice key live).
+
+---
+
 ## 2026-05-20 (cursor) — phase 4 complete
 
 shipped:

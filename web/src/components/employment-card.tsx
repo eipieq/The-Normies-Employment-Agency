@@ -1,6 +1,6 @@
-import { Lock } from "@phosphor-icons/react/dist/ssr";
 import { NormiePortrait } from "./normie-portrait";
 import { ShareButton } from "./share-button";
+import { GatedPanel } from "./gated-panel";
 import type { Persona } from "@/lib/persona";
 import type { ArchetypeFeatures, HistoryComplexity, AgentInfo } from "@/lib/normies";
 
@@ -84,18 +84,8 @@ export function EmploymentCard({ tokenId, pixels, persona, archetype, history, a
           )}
         </p>
 
-        {/* gated section placeholder */}
-        <div className="rounded-lg bg-neutral-50 border border-neutral-100 px-3.5 py-3 flex items-start gap-2.5">
-          <Lock size={16} className="text-neutral-300 mt-0.5 shrink-0" />
-          <div className="space-y-0.5">
-            <p className="text-xs font-medium text-neutral-500">
-              work style, strengths, system prompt
-            </p>
-            <p className="text-[11px] text-neutral-400">
-              connect wallet to verify ownership and unlock
-            </p>
-          </div>
-        </div>
+        {/* gated section */}
+        <GatedPanel tokenId={tokenId} />
 
         {/* actions */}
         <div className="flex items-center justify-between pt-0.5">
