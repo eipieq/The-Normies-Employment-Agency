@@ -14,14 +14,21 @@ export default async function OgImage({ params }: Props) {
   const tokenId = parseInt(id);
   if (isNaN(tokenId)) return new Response("not found", { status: 404 });
 
-  const [interMedium, interRegular] = await Promise.all([
+  const baseUrl = process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : "http://localhost:3000";
+
+  const [interMedium, interRegular, wordmarkData] = await Promise.all([
     fetch("https://fonts.bunny.net/inter/files/inter-latin-500-normal.woff").then((r) =>
       r.arrayBuffer()
     ),
     fetch("https://fonts.bunny.net/inter/files/inter-latin-400-normal.woff").then((r) =>
       r.arrayBuffer()
     ),
+    fetch(`${baseUrl}/agency-wordmark.png`).then((r) => r.arrayBuffer()),
   ]);
+
+  const wordmarkUrl = `data:image/png;base64,${Buffer.from(wordmarkData).toString("base64")}`;
 
   const features = await loadFeatures(tokenId);
   const persona = await getPersona(tokenId, features);
@@ -73,17 +80,9 @@ export default async function OgImage({ params }: Props) {
             padding: "52px 56px",
           }}
         >
-          {/* top label */}
-          <div
-            style={{
-              fontSize: 13,
-              color: "#a3a3a3",
-              letterSpacing: "0.08em",
-              textTransform: "uppercase",
-            }}
-          >
-            normie employment agency
-          </div>
+          {/* wordmark */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={wordmarkUrl} alt="the normie employment agency" style={{ height: 22, width: "auto", opacity: 0.35 }} />
 
           {/* job title + one-liner */}
           <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>

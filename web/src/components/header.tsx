@@ -2,6 +2,7 @@
 
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import Link from "next/link";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 const pillInner = cn(
@@ -15,11 +16,15 @@ const pillOuter = "inline-flex h-[34px] items-center rounded-md border border-bl
 export function Header() {
   return (
     <header className="border-b border-neutral-100 px-4 h-12 flex items-center justify-between">
-      <Link
-        href="/"
-        className="text-xs text-neutral-400 tracking-wide hover:text-neutral-600 transition-colors"
-      >
-        normie employment agency
+      <Link href="/" className="flex items-center opacity-80 hover:opacity-100 transition-opacity">
+        <Image
+          src="/agency-wordmark.svg"
+          alt="the normie employment agency"
+          width={140}
+          height={30}
+          className="h-[18px] w-auto"
+          priority
+        />
       </Link>
 
       <ConnectButton.Custom>
