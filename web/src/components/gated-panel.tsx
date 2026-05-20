@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { Lock, Copy, Check } from "@phosphor-icons/react";
 import { useAuth } from "@/lib/auth-context";
-import { CustomConnectButton } from "./connect-button";
 
 type GatedData = {
   workStyle: string;
@@ -60,7 +60,7 @@ export function GatedPanel({ tokenId }: { tokenId: number }) {
             </p>
           </div>
         </div>
-        <CustomConnectButton size="sm" />
+        <ConnectButton accountStatus="address" chainStatus="none" showBalance={false} />
       </div>
     );
   }
