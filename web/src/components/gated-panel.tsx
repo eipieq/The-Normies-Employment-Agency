@@ -4,6 +4,14 @@ import { useEffect, useState } from "react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { Lock, Copy, Check } from "@phosphor-icons/react";
 import { useAuth } from "@/lib/auth-context";
+import { cn } from "@/lib/utils";
+
+const pillInner = cn(
+  "inline-flex h-[28px] cursor-pointer items-center justify-center gap-1.5 rounded-sm bg-primary px-2.5 text-[13px] font-medium text-primary-foreground tracking-tight transition-all",
+  "shadow-[inset_0_1px_0_rgba(255,255,255,0.15),inset_0_-1px_0_rgba(0,0,0,0.1)]",
+  "hover:bg-primary/90"
+);
+const pillOuter = "inline-flex h-[34px] items-center rounded-md border border-black/10 bg-card p-[2px]";
 
 type GatedData = {
   workStyle: string;
@@ -60,7 +68,20 @@ export function GatedPanel({ tokenId }: { tokenId: number }) {
             </p>
           </div>
         </div>
-        <ConnectButton accountStatus="address" chainStatus="none" showBalance={false} />
+        <ConnectButton.Custom>
+          {({ openConnectModal, openAccountModal, authenticationStatus, account, chain, mounted }) => {
+            const ready = mounted && authenticationStatus !== "loading";
+            const connected = ready && account && chain && authenticationStatus === "authenticated";
+            if (!ready) return null;
+            return (
+              <div className={pillOuter}>
+                <button onClick={connected ? openAccountModal : openConnectModal} className={pillInner}>
+                  {connected ? account.displayName : "connect wallet"}
+                </button>
+              </div>
+            );
+          }}
+        </ConnectButton.Custom>
       </div>
     );
   }
