@@ -1,6 +1,6 @@
 "use client";
 
-import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { CustomConnectButton } from "./connect-button";
 import Link from "next/link";
 
 export function Header() {
@@ -12,11 +12,7 @@ export function Header() {
       >
         normie employment agency
       </Link>
-      <ConnectButton
-        accountStatus="address"
-        chainStatus="none"
-        showBalance={false}
-      />
+      <CustomConnectButton />
     </header>
   );
 }
