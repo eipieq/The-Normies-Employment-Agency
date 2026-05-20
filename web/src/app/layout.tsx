@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import { Providers } from "@/components/providers";
 import { Header } from "@/components/header";
 import "./globals.css";
@@ -12,6 +13,12 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+const geistPixelSquare = localFont({
+  src: "../../node_modules/geist/dist/fonts/geist-pixel/GeistPixel-Square.woff2",
+  variable: "--font-pixel-square",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -28,7 +35,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${geistPixelSquare.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
         <Providers>

@@ -24,7 +24,7 @@ export default async function Home() {
         <p className="text-[11px] uppercase tracking-widest text-neutral-400">
           normie works — by the normie employment agency
         </p>
-        <h1 className="text-4xl font-medium text-neutral-900 max-w-md leading-tight">
+        <h1 className="font-pixel-square text-4xl text-neutral-900 max-w-md leading-tight">
           your normie got a job.
         </h1>
         <p className="text-sm text-neutral-500 max-w-sm leading-relaxed">

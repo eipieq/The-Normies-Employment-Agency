@@ -90,6 +90,10 @@
   --font-mono: "Geist Mono", "Geist Mono Fallback", ui-monospace, monospace;
 }
 
+.font-pixel-square {
+  font-family: var(--font-pixel-square), monospace;
+}
+
 @layer base {
   * {
     @apply border-border;

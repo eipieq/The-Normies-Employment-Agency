@@ -6,6 +6,19 @@ format: date, agent, what shipped, what's next, blockers.
 
 ---
 
+## 2026-05-20 (cursor) — geist pixel square hero font
+
+shipped:
+
+- installed `geist` npm package (v1.7.0), which ships `GeistPixel-Square.woff2` locally.
+- wired via `next/font/local` in `layout.tsx` as `--font-pixel-square` CSS var.
+- added `.font-pixel-square` utility class in `globals.css`.
+- applied to hero `<h1>` on homepage.
+
+next: phase 6 (chat surface) — see below.
+
+---
+
 ## 2026-05-20 (cursor) — homepage (phase 8 partial)
 
 shipped:
