@@ -1,46 +1,49 @@
 "use client";
 
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { Wallet, SignIn, SignOut, WarningCircle } from "@phosphor-icons/react";
+import { cn } from "@/lib/utils";
 
-// custom connect button that matches the design guide.
-// delegates wallet selection + signing to rainbowkit's modal, just skins the trigger.
-export function CustomConnectButton({ size = "default" }: { size?: "default" | "sm" }) {
-  const isSmall = size === "sm";
-  const cls = isSmall
-    ? "inline-flex items-center gap-1.5 rounded-md border border-neutral-200 bg-white px-2.5 py-1.5 text-[11px] font-medium text-neutral-500 hover:border-neutral-300 hover:text-neutral-700 transition-colors cursor-pointer"
-    : "inline-flex items-center gap-1.5 rounded-md border border-neutral-200 bg-white px-3 py-1.5 text-xs font-medium text-neutral-500 hover:border-neutral-300 hover:text-neutral-700 transition-colors cursor-pointer";
+const outer = "inline-flex items-center rounded-md border border-black/10 bg-card p-[2px]";
 
+const inner = (extra?: string) =>
+  cn(
+    "inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-sm px-2 py-0.5 text-[14px] font-medium tracking-tight transition-all",
+    "shadow-[inset_0_1px_0_rgba(255,255,255,0.15),inset_0_-1px_0_rgba(0,0,0,0.1)]",
+    extra
+  );
+
+export function CustomConnectButton() {
   return (
     <ConnectButton.Custom>
       {({ account, chain, openAccountModal, openChainModal, openConnectModal, authenticationStatus, mounted }) => {
         const ready = mounted && authenticationStatus !== "loading";
         const connected = ready && account && chain && authenticationStatus === "authenticated";
 
-        if (!ready) return <div className={cls} style={{ opacity: 0, pointerEvents: "none" }} aria-hidden />;
+        if (!ready) return <div className={outer} style={{ opacity: 0, pointerEvents: "none" }} aria-hidden />;
 
         if (!connected) {
           return (
-            <button onClick={openConnectModal} className={cls}>
-              <Wallet size={isSmall ? 12 : 14} />
-              connect wallet
-            </button>
+            <div className={outer}>
+              <button onClick={openConnectModal} className={inner("bg-primary text-primary-foreground hover:bg-primary/90")}>
+                Connect Wallet
+              </button>
+            </div>
           );
         }
 
         if (chain.unsupported) {
           return (
-            <button onClick={openChainModal} className={cls + " border-red-200 text-red-500 hover:border-red-300 hover:text-red-600"}>
-              <WarningCircle size={isSmall ? 12 : 14} />
-              wrong network
-            </button>
+            <div className={outer}>
+              <button onClick={openChainModal} className={inner("bg-red-500 text-white hover:bg-red-500/90")}>
+                Wrong Network
+              </button>
+            </div>
           );
         }
 
         return (
-          <div className="flex items-center gap-2">
-            <button onClick={openAccountModal} className={cls}>
-              <SignIn size={isSmall ? 12 : 14} className="text-indigo-300" />
+          <div className={outer}>
+            <button onClick={openAccountModal} className={inner("bg-neutral-100 text-neutral-700 hover:bg-neutral-200")}>
               {account.displayName}
             </button>
           </div>
@@ -50,20 +53,20 @@ export function CustomConnectButton({ size = "default" }: { size?: "default" | "
   );
 }
 
-// sign-out button used elsewhere
 export function SignOutButton() {
   return (
     <ConnectButton.Custom>
       {({ openAccountModal, mounted }) => {
         if (!mounted) return null;
         return (
-          <button
-            onClick={openAccountModal}
-            className="inline-flex items-center gap-1 text-[11px] text-neutral-400 hover:text-neutral-600 transition-colors"
-          >
-            <SignOut size={12} />
-            disconnect
-          </button>
+          <div className={outer}>
+            <button
+              onClick={openAccountModal}
+              className={inner("bg-neutral-100 text-neutral-500 hover:bg-neutral-200")}
+            >
+              Disconnect
+            </button>
+          </div>
         );
       }}
     </ConnectButton.Custom>

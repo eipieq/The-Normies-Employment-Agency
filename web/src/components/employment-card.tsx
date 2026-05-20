@@ -39,11 +39,11 @@ export function EmploymentCard({ tokenId, pixels, persona, archetype, history, a
       {/* portrait panel */}
       <div className="relative bg-neutral-100 flex items-center justify-center py-8">
         <NormiePortrait pixels={pixels} size={200} />
-        <span className="absolute bottom-3 left-3.5 text-[11px] text-neutral-400 tabular-nums">
+        <span className="absolute bottom-3 left-3.5 text-sm text-neutral-400 tabular-nums">
           #{String(tokenId).padStart(4, "0")}
         </span>
         {name && (
-          <span className="absolute top-3 right-3.5 text-[11px] text-neutral-400">
+          <span className="absolute top-3 right-3.5 text-sm text-neutral-400">
             {name}
           </span>
         )}
@@ -52,7 +52,7 @@ export function EmploymentCard({ tokenId, pixels, persona, archetype, history, a
       {/* content */}
       <div className="p-4 space-y-3">
         {/* meta row */}
-        <div className="flex items-center gap-1.5 text-[11px] text-neutral-400">
+        <div className="flex items-center gap-1.5 text-sm text-neutral-400">
           <span>{archetype.category}</span>
           <span className="text-neutral-200">·</span>
           <span>{FORMALITY_LABEL[archetype.formality]}</span>
@@ -74,7 +74,7 @@ export function EmploymentCard({ tokenId, pixels, persona, archetype, history, a
         <div className="border-t border-neutral-100" />
 
         {/* canvas status */}
-        <p className="text-[11px] text-neutral-400">
+        <p className="text-sm text-neutral-400">
           {canvasNote}
           {archetype.tags.length > 0 && (
             <>
@@ -94,7 +94,7 @@ export function EmploymentCard({ tokenId, pixels, persona, archetype, history, a
             jobTitle={persona.jobTitle}
             oneLiner={persona.oneLiner}
           />
-          <span className="text-[11px] text-neutral-300">
+          <span className="text-sm text-neutral-300">
             normie employment agency
           </span>
         </div>

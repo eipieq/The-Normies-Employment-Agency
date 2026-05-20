@@ -7,7 +7,7 @@ import { useAuth } from "@/lib/auth-context";
 import { cn } from "@/lib/utils";
 
 const pillInner = cn(
-  "inline-flex h-[28px] cursor-pointer items-center justify-center gap-1.5 rounded-sm bg-primary px-2.5 text-[13px] font-medium text-primary-foreground tracking-tight transition-all",
+  "inline-flex h-[28px] cursor-pointer items-center justify-center gap-1.5 rounded-sm bg-primary px-2.5 text-sm font-medium text-primary-foreground tracking-tight transition-all",
   "shadow-[inset_0_1px_0_rgba(255,255,255,0.15),inset_0_-1px_0_rgba(0,0,0,0.1)]",
   "hover:bg-primary/90"
 );
@@ -60,10 +60,10 @@ export function GatedPanel({ tokenId }: { tokenId: number }) {
         <div className="flex items-start gap-2.5">
           <Lock size={16} className="text-neutral-300 mt-0.5 shrink-0" />
           <div className="space-y-0.5">
-            <p className="text-xs font-medium text-neutral-500">
+            <p className="text-sm font-medium text-neutral-500">
               work style · strengths · system prompt
             </p>
-            <p className="text-[11px] text-neutral-400">
+            <p className="text-sm text-neutral-400">
               connect wallet to verify ownership and unlock
             </p>
           </div>
@@ -90,7 +90,7 @@ export function GatedPanel({ tokenId }: { tokenId: number }) {
   if (status === "loading") {
     return (
       <div className="rounded-lg bg-neutral-50 border border-neutral-100 p-3.5">
-        <p className="text-xs text-neutral-400">verifying ownership...</p>
+        <p className="text-sm text-neutral-400">verifying ownership...</p>
       </div>
     );
   }
@@ -101,8 +101,8 @@ export function GatedPanel({ tokenId }: { tokenId: number }) {
       <div className="rounded-lg bg-neutral-50 border border-neutral-100 p-3.5 flex items-start gap-2.5">
         <Lock size={16} className="text-neutral-300 mt-0.5 shrink-0" />
         <div className="space-y-0.5">
-          <p className="text-xs font-medium text-neutral-500">not your normie</p>
-          <p className="text-[11px] text-neutral-400">
+          <p className="text-sm font-medium text-neutral-500">not your normie</p>
+          <p className="text-sm text-neutral-400">
             this normie belongs to a different wallet.
           </p>
         </div>
@@ -114,7 +114,7 @@ export function GatedPanel({ tokenId }: { tokenId: number }) {
   if (status === "error") {
     return (
       <div className="rounded-lg bg-neutral-50 border border-neutral-100 p-3.5">
-        <p className="text-xs text-neutral-400">something went wrong. try refreshing.</p>
+        <p className="text-sm text-neutral-400">something went wrong. try refreshing.</p>
       </div>
     );
   }
@@ -125,7 +125,7 @@ export function GatedPanel({ tokenId }: { tokenId: number }) {
       <div className="space-y-3">
         {/* work style */}
         <div className="space-y-1">
-          <p className="text-[11px] font-semibold text-neutral-400 uppercase tracking-wide">
+          <p className="text-sm font-semibold text-neutral-400 uppercase tracking-wide">
             work style
           </p>
           <p className="text-sm text-neutral-600 leading-relaxed">{data.workStyle}</p>
@@ -134,24 +134,24 @@ export function GatedPanel({ tokenId }: { tokenId: number }) {
         {/* strengths + blind spots */}
         <div className="grid grid-cols-2 gap-3">
           <div className="space-y-1.5">
-            <p className="text-[11px] font-semibold text-neutral-400 uppercase tracking-wide">
+            <p className="text-sm font-semibold text-neutral-400 uppercase tracking-wide">
               strengths
             </p>
             <ul className="space-y-1">
               {data.strengths.map((s) => (
-                <li key={s} className="text-[11px] text-neutral-500 leading-relaxed">
+                <li key={s} className="text-sm text-neutral-500 leading-relaxed">
                   {s}
                 </li>
               ))}
             </ul>
           </div>
           <div className="space-y-1.5">
-            <p className="text-[11px] font-semibold text-neutral-400 uppercase tracking-wide">
+            <p className="text-sm font-semibold text-neutral-400 uppercase tracking-wide">
               blind spots
             </p>
             <ul className="space-y-1">
               {data.blindSpots.map((s) => (
-                <li key={s} className="text-[11px] text-neutral-500 leading-relaxed">
+                <li key={s} className="text-sm text-neutral-500 leading-relaxed">
                   {s}
                 </li>
               ))}
@@ -162,18 +162,18 @@ export function GatedPanel({ tokenId }: { tokenId: number }) {
         {/* system prompt */}
         <div className="space-y-1.5">
           <div className="flex items-center justify-between">
-            <p className="text-[11px] font-semibold text-neutral-400 uppercase tracking-wide">
+            <p className="text-sm font-semibold text-neutral-400 uppercase tracking-wide">
               system prompt
             </p>
             <button
               onClick={copyPrompt}
-              className="flex items-center gap-1 text-[11px] text-neutral-400 hover:text-neutral-600 transition-colors"
+              className="flex items-center gap-1 text-sm text-neutral-400 hover:text-neutral-600 transition-colors"
             >
               {copied ? <Check size={12} /> : <Copy size={12} />}
               {copied ? "copied" : "copy"}
             </button>
           </div>
-          <p className="text-[11px] text-neutral-500 leading-relaxed whitespace-pre-wrap bg-neutral-50 rounded-lg p-2.5 border border-neutral-100 max-h-40 overflow-y-auto">
+          <p className="text-sm text-neutral-500 leading-relaxed whitespace-pre-wrap bg-neutral-50 rounded-lg p-2.5 border border-neutral-100 max-h-40 overflow-y-auto">
             {data.systemPrompt}
           </p>
         </div>
