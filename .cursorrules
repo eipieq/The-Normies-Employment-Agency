@@ -1,0 +1,29 @@
+read AGENTS.md in the repo root before anything else. it is the master context for any agent working here (claude, cursor, codex).
+
+then read PLAN.md for architecture and PROGRESS.md for current state and what to do next.
+
+key conventions to apply on every response:
+
+writing style:
+- lowercase throughout. caps only for acronyms and proper nouns.
+- no em dashes. use periods, commas, colons, parens.
+- short sentences, direct, opinionated. no hedging when the answer is clear.
+- minimal formatting. headers for sections, bold only when introducing a key term.
+
+code style:
+- simple over abstract. an undergrad should read it in one pass.
+- no helpers for things done once.
+- short variable names.
+- no defensive handling for things that won't fail on clean inputs.
+- only validate at system boundaries (user input, external APIs).
+
+design (quiet utility):
+- neutral surfaces, soft shadows, indigo-300 as the only accent.
+- phosphor icons at 20px regular weight.
+- font: Ronzino or geometric/humanist sans, -0.02em letter-spacing.
+- if an element doesn't carry information, it shouldn't exist.
+
+workflow:
+- work in phases as defined in PLAN.md. one phase at a time.
+- before ending the session, append 2-3 lines to PROGRESS.md (state, next step, blockers).
+- commit work in progress, even as WIP commits. git is the cross-agent audit trail.
