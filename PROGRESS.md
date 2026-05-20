@@ -6,6 +6,27 @@ format: date, agent, what shipped, what's next, blockers.
 
 ---
 
+## 2026-05-20 (cursor) — homepage (phase 8 partial)
+
+shipped:
+
+- `web/src/app/page.tsx` — real landing page. hero ("your normie got a job." + pitch), live example normies (3 server-side rendered cards for #1, #100, #1337), how it works (3-step neutral-100 panel), coming soon footer strip. `revalidate = 3600`.
+- `web/src/components/normie-preview-card.tsx` — mini employment card for the homepage grid. portrait (120px), category, job title, one-liner (clamped), "view card →" link. hover shadow lift.
+- custom connect button (`connect-button.tsx`) also shipped this session then reverted back to stock rainbowkit per user preference.
+- `@walletconnect/ethereum-provider` installed as explicit dep (rainbowkit transitive dep that turbopack couldn't resolve).
+
+next:
+
+- **phase 6: chat surface**. `/api/works/chat/[id]` streaming endpoint + `/works/[id]/chat` ui. uses generated system prompt, `streamText` from ai sdk, venice provider.
+- **phase 7: roster**. `/roster` page listing all normies for connected wallet via `/holders/:address`.
+- **phase 8 remaining**: mobile pass, typography polish, final card design.
+
+blockers:
+
+- none. all chat deps installed.
+
+---
+
 ## 2026-05-20 (cursor) — phase 5 complete
 
 shipped:
