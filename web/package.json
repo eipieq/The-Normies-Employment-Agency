@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "smoke": "tsx scripts/smoke.ts"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.78",
@@ -32,6 +34,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "tailwindcss": "^4",
+    "tsx": "^4.22.3",
     "typescript": "^5"
   },
   "pnpm": {
@@ -42,7 +45,8 @@
       "keccak",
       "secp256k1",
       "bufferutil",
-      "utf-8-validate"
+      "utf-8-validate",
+      "esbuild"
     ]
   }
 }
