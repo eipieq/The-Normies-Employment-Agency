@@ -28,7 +28,7 @@ const authAdapter = createAuthenticationAdapter({
     createSiweMessage({
       domain: window.location.host,
       address,
-      statement: "sign in to the normie employment agency.",
+      statement: "sign in to the normies employment agency.",
       uri: window.location.origin,
       version: "1",
       chainId,

@@ -1,4 +1,4 @@
-# the normie employment agency
+# the normies employment agency
 
 an umbrella product for holders. the agency is the home. **normie works** is its first feature: an ai coworker for every normie holder, generated from on-chain data and unlocked by wallet ownership.
 

@@ -51,7 +51,7 @@ export default async function WorksPage({ params }: Props) {
   const persona = await getPersona(tokenId, features);
 
   return (
-    <main className="flex flex-1 flex-col items-center justify-start py-12 px-4">
+    <main className="flex flex-1 flex-col items-center justify-start pt-12 pb-24 px-4">
       <EmploymentCard
         tokenId={tokenId}
         pixels={features.pixels}

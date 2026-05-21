@@ -3,7 +3,7 @@ export default function NotFound() {
     <main className="flex flex-1 items-center justify-center px-8">
       <div className="max-w-xs text-center space-y-2">
         <p className="text-sm uppercase tracking-widest text-neutral-400">
-          normie employment agency
+          normies employment agency
         </p>
         <h1 className="text-xl font-medium text-neutral-900">
           normie not found

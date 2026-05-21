@@ -1,11 +1,10 @@
 import { loadFeatures } from "@/lib/normies";
 import { getPersona } from "@/lib/persona";
+import { HOMEPAGE_EXAMPLES } from "@/lib/featured-normies";
 import { CardsMarquee } from "@/components/cards-marquee";
 import { PillButtonLink } from "@/components/pill-button";
 
 export const revalidate = 3600;
-
-const EXAMPLES = [1, 42, 100, 420, 2187, 2000, 3059, 6303];
 
 async function loadExample(id: number) {
   const features = await loadFeatures(id);
@@ -14,7 +13,7 @@ async function loadExample(id: number) {
 }
 
 export default async function Home() {
-  const results = await Promise.allSettled(EXAMPLES.map(loadExample));
+  const results = await Promise.allSettled(HOMEPAGE_EXAMPLES.map(loadExample));
   const examples = results.flatMap(r => r.status === "fulfilled" ? [r.value] : []);
 
   return (
@@ -29,7 +28,7 @@ export default async function Home() {
           You get an employment card, a work profile, and a coworker to chat with.
         </p>
         <div className="flex items-center gap-2 mt-1">
-          <PillButtonLink href="#examples">
+          <PillButtonLink href="/explore">
             Explore the Talented Normies
           </PillButtonLink>
           <PillButtonLink

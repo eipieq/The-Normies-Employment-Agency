@@ -90,7 +90,7 @@ export function EmploymentCard({ tokenId, pixels, persona, archetype, history, a
             className="text-neutral-900 hover:text-neutral-700 transition-colors"
             style={{ fontFamily: "var(--font-instrument-sans)", fontWeight: 500, fontSize: "13px", letterSpacing: "-0.01em", lineHeight: 1 }}
           >
-            The Normie<br />Employment Agency
+            The Normies<br />Employment Agency
           </Link>
       </div>
 

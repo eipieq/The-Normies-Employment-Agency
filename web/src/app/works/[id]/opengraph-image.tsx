@@ -82,7 +82,7 @@ export default async function OgImage({ params }: Props) {
         >
           {/* wordmark */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={wordmarkUrl} alt="the normie employment agency" style={{ height: 22, width: "auto", opacity: 0.35 }} />
+          <img src={wordmarkUrl} alt="the normies employment agency" style={{ height: 22, width: "auto", opacity: 0.35 }} />
 
           {/* job title + one-liner */}
           <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>

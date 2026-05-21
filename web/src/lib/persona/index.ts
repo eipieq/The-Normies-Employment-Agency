@@ -10,10 +10,10 @@ export async function getPersona(tokenId: number, features?: NormieFeatures): Pr
   const f = features ?? await loadFeatures(tokenId);
   const cv = f.history.versionCount;
 
-  const cached = cacheGet(tokenId, cv);
+  const cached = await cacheGet(tokenId, cv);
   if (cached) return cached;
 
   const persona = await generatePersona(f);
-  cacheSet(tokenId, cv, persona);
+  await cacheSet(tokenId, cv, persona);
   return persona;
 }

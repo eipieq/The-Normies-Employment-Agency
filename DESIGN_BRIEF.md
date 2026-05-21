@@ -1,10 +1,10 @@
 # design brief
 
-what needs to be designed for the normie employment agency, and when each piece is needed.
+what needs to be designed for the normies employment agency, and when each piece is needed.
 
 naming hierarchy:
 
-- **the normie employment agency** is the umbrella product. owns the top-level brand, the landing page, the wallet auth, the roster.
+- **the normies employment agency** is the umbrella product. owns the top-level brand, the landing page, the wallet auth, the roster.
 - **normie works** is the first feature inside the agency. the artwork-to-ai-persona generator. owns the employment card and the chat surface.
 - future features (payroll, performance reviews, the union, etc) would sit alongside normie works under the agency.
 
@@ -20,7 +20,7 @@ it's the link preview on x. shows up at 1200x630, no interaction, has maybe 0.5 
 
 **agency mark** (parent):
 
-- wordmark for "the normie employment agency" (lowercase)
+- wordmark for "the normies employment agency" (lowercase)
 - the agency is the umbrella, so this is what lives in the header, the favicon, the og card for the homepage, business-card style surfaces
 - think corporate but quietly weird. it's an employment agency for pixel faces.
 - monochrome version too, since the site itself is neutral

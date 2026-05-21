@@ -42,6 +42,31 @@ design-guide drift (now reflected in AGENTS.md):
 
 ---
 
+## 2026-05-21 (cursor) — deploy + upstash persona cache
+
+shipped:
+
+- persona cache swapped to upstash redis in prod (`KV_REST_API_URL` / `KV_REST_API_TOKEN` from vercel marketplace). filesystem fallback for local dev.
+- `@upstash/redis` added. `cacheGet`/`cacheSet` now async.
+- vercel project linked (`express-web/web`), upstash-kv provisioned, env vars set for production.
+- production deploy live: https://web-pi-jade-56.vercel.app
+
+next: add reown allowlist for prod domain, smoke test wallet auth, custom domain.
+
+---
+
+## 2026-05-21 (cursor) — explore page
+
+shipped:
+
+- `/explore` page with search by token ID (0–9999) and 15 featured normie preview cards in a responsive grid.
+- `FEATURED_NORMIES` shared constant in `lib/featured-normies.ts`; homepage marquee uses first 8 via `HOMEPAGE_EXAMPLES`.
+- homepage CTA now links to `/explore`.
+
+next: phase 6 (chat surface).
+
+---
+
 ## 2026-05-21 (cursor) — ui polish round 2
 
 shipped:

@@ -1,4 +1,4 @@
-# the normie employment agency
+# the normies employment agency
 
 an umbrella product for normie holders. the agency is the home. **normie works** is the first feature: an artwork-to-ai-persona generator gated by wallet ownership.
 
@@ -19,7 +19,7 @@ submission for the normies hackathon (https://hackathon.normies.art/). started 2
 
 ## naming hierarchy
 
-- **the normie employment agency** is the umbrella product (parent). owns the landing page, wallet auth, roster.
+- **the normies employment agency** is the umbrella product (parent). owns the landing page, wallet auth, roster.
 - **normie works** is the first feature. owns the employment card and chat surface. route: `/works/[id]`.
 - future features (payroll, performance reviews, the union) sit alongside without renaming.
 

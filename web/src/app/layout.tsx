@@ -28,7 +28,7 @@ const geistPixelSquare = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "the normie employment agency",
+  title: "the normies employment agency",
   description:
     "an ai coworker for every normie holder. generated from on-chain data, unlocked by wallet ownership.",
 };
