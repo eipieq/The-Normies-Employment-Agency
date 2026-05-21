@@ -50,8 +50,9 @@ shipped:
 - `@upstash/redis` added. `cacheGet`/`cacheSet` now async.
 - vercel project linked (`express-web/web`), upstash-kv provisioned, env vars set for production.
 - production deploy live: https://web-pi-jade-56.vercel.app
+- committed as `f7759b4` (explore + upstash cache).
 
-next: add reown allowlist for prod domain, smoke test wallet auth, custom domain.
+next: push repo to github, run `vercel git connect` from `web/`, add reown allowlist for prod domain.
 
 ---
 
