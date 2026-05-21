@@ -6,6 +6,20 @@ format: date, agent, what shipped, what's next, blockers.
 
 ---
 
+## 2026-05-21 (cursor) — commit + prod deploy
+
+shipped:
+
+- committed `b3f99d9` (chat, roster, public roster gallery) and pushed to github.
+- prod deploy live at https://normies.sandpark.co via `vercel deploy --prod` from `web/`.
+- verified `/roster/[address]` works in prod.
+
+note: git-triggered deploys still fail until vercel project **root directory** is set to `web` in dashboard (currently `.`). cli deploy from `web/` works.
+
+next: phase 8 polish (mobile, OG/share). hackathon submitted, reown allowlist done.
+
+---
+
 ## 2026-05-21 (cursor) — public roster by address
 
 shipped:
