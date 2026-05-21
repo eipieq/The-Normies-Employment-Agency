@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { Lock, Copy, Check } from "@phosphor-icons/react";
+import { Lock, Copy, Check, ChatCircle } from "@phosphor-icons/react";
 import { useAuth } from "@/lib/auth-context";
 import { cn } from "@/lib/utils";
+import { PillButtonLink } from "@/components/pill-button";
 
 const pillInner = cn(
   "inline-flex h-[28px] cursor-pointer items-center justify-center gap-1.5 rounded-sm bg-primary px-2.5 text-sm font-medium text-primary-foreground tracking-tight transition-all",
@@ -176,6 +177,13 @@ export function GatedPanel({ tokenId }: { tokenId: number }) {
           <p className="text-sm text-neutral-500 leading-relaxed whitespace-pre-wrap bg-neutral-50 rounded-lg p-2.5 border border-neutral-100 max-h-40 overflow-y-auto">
             {data.systemPrompt}
           </p>
+        </div>
+
+        <div className="flex justify-center pt-1">
+          <PillButtonLink href={`/works/${tokenId}/chat`}>
+            <ChatCircle size={16} weight="regular" />
+            meet your coworker
+          </PillButtonLink>
         </div>
       </div>
     );

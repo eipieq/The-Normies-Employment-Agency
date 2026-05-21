@@ -1,9 +1,9 @@
 import { generateText } from "ai";
-import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
 import { z } from "zod";
 import type { NormieFeatures } from "../normies";
 import { AGENCY_BRIEF } from "./brief";
 import type { Persona } from "./types";
+import { veniceModel } from "../venice";
 
 const personaSchema = z.object({
   jobTitle: z.string(),
@@ -69,14 +69,8 @@ generate the persona object for this normie.${JSON_INSTRUCTIONS}`;
 }
 
 export async function generatePersona(f: NormieFeatures): Promise<Persona> {
-  const venice = createOpenAICompatible({
-    name: "venice",
-    baseURL: "https://api.venice.ai/api/v1",
-    apiKey: process.env.VENICE_API_KEY!,
-  });
-
   const { text } = await generateText({
-    model: venice("claude-opus-4-7"),
+    model: veniceModel(),
     system: AGENCY_BRIEF,
     prompt: buildUserMessage(f),
     temperature: 0,

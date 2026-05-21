@@ -6,6 +6,59 @@ format: date, agent, what shipped, what's next, blockers.
 
 ---
 
+## 2026-05-21 (cursor) — public roster by address
+
+shipped:
+
+- `/roster/[address]` — public roster page for any wallet. validates address, fetches `/holders/:address`, lightweight grid (svg portrait + token id, links to `/works/[id]`). no persona generation (150+ normie wallets would timeout otherwise).
+
+next: deploy to normies.sandpark.co so the URL works in prod.
+
+---
+
+## 2026-05-21 (cursor) — phase 7: roster
+
+shipped:
+
+- `GET /api/roster` — SIWE session required, fetches `/holders/:address`, loads preview card data (pixels + persona) per token.
+- `/roster` page — connect gate, loading/empty/error states, grid of `NormiePreviewCard` linking to `/works/[id]`.
+- header shows **Roster** link when authenticated.
+
+next:
+
+- **phase 8 remaining**: mobile pass, employment card polish, OG/share card final pass.
+- **phase 9 remaining**: custom domain, hackathon write-up, reown prod allowlist.
+
+blockers:
+
+- user doesn't hold normies. empty roster state is what they'll see after sign-in. holder wallet needed to verify populated grid.
+
+---
+
+## 2026-05-21 (cursor) — phase 6: chat surface
+
+shipped:
+
+- `/api/works/chat/[id]` — POST streaming endpoint. SIWE session + live ownership gate, upstash rate limit (30/hr per wallet+token), venice `streamText` with cached persona `systemPrompt`.
+- `/works/[id]/chat` — owner-only chat page. redirects non-owners back to the employment card.
+- `chat-surface.tsx` — `useChat` + `DefaultChatTransport`, message bubbles, streaming status, back link to card.
+- `lib/venice.ts` shared model helper (persona generator uses it too).
+- `lib/chat-rate-limit.ts` — upstash incr/expire, filesystem dev passthrough.
+- gated panel: "meet your coworker" button links to chat when unlocked.
+- `@ai-sdk/react` added for `useChat`.
+
+next:
+
+- **phase 7: roster**. `/roster` page via `/holders/:address`.
+- **phase 8 remaining**: mobile pass, OG polish.
+- **phase 9 remaining**: custom domain, hackathon write-up.
+
+blockers:
+
+- user doesn't hold normies. full chat happy path needs a holder to test. SIWE + gate still testable.
+
+---
+
 ## 2026-05-20 (claude) — homepage visual refresh + preview card redesign
 
 shipped:
