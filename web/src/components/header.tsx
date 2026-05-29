@@ -8,16 +8,17 @@ export function Header() {
   const { status } = useAuth();
 
   return (
-    <header className="border-b border-neutral-100 bg-white px-8 py-3 flex items-center justify-between">
+    <header className="border-b border-neutral-100 bg-white px-4 sm:px-8 py-3 flex items-center justify-between gap-3">
       <Link
         href="/"
-        className="text-neutral-900 hover:text-neutral-700 transition-colors"
-        style={{ fontFamily: "var(--font-instrument-sans)", fontWeight: 500, fontSize: "18px", letterSpacing: "-0.01em", lineHeight: 1 }}
+        className="text-neutral-900 hover:text-neutral-700 transition-colors shrink min-w-0 text-[15px] sm:text-[18px]"
+        style={{ fontFamily: "var(--font-instrument-sans)", fontWeight: 500, letterSpacing: "-0.01em", lineHeight: 1 }}
       >
-        The Normies<br />Employment Agency
+        <span className="sm:hidden">Normies<br />Agency</span>
+        <span className="hidden sm:inline">The Normies<br />Employment Agency</span>
       </Link>
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2 sm:gap-4 shrink-0">
         {status === "authenticated" && (
           <Link
             href="/roster"

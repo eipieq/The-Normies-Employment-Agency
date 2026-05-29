@@ -19,16 +19,16 @@ export default async function Home() {
   return (
     <main className="flex flex-1 flex-col">
       {/* hero */}
-      <section className="flex flex-col items-center justify-center text-center px-6 py-20 gap-5">
-        <h1 className="font-pixel-square text-5xl text-neutral-900 max-w-xl leading-tight">
+      <section className="flex flex-col items-center justify-center text-center px-4 sm:px-6 py-14 sm:py-20 gap-5">
+        <h1 className="font-pixel-square text-3xl sm:text-5xl text-neutral-900 max-w-xl leading-tight">
           Your normie got a job.
         </h1>
-        <p className="text-base text-neutral-500 max-w-lg leading-relaxed">
+        <p className="text-base text-neutral-500 max-w-lg leading-relaxed px-1">
           We read the on-chain data (pixels, traits, canvas history) and place your normie in a role.
           You get an employment card, a work profile, and a coworker to chat with.
         </p>
-        <div className="flex items-center gap-2 mt-1">
-          <PillButtonLink href="/explore">
+        <div className="flex flex-col items-stretch gap-2 w-full max-w-xs sm:max-w-none sm:flex-row sm:items-center sm:justify-center mt-1">
+          <PillButtonLink href="/explore" className="w-full sm:w-auto">
             Explore the Talented Normies
           </PillButtonLink>
           <PillButtonLink
@@ -36,6 +36,7 @@ export default async function Home() {
             target="_blank"
             rel="noopener noreferrer"
             variant="secondary"
+            className="w-full sm:w-auto"
           >
             Explore on OpenSea
           </PillButtonLink>
@@ -90,14 +91,14 @@ export default async function Home() {
       <section className="px-6 pb-20">
         <div className="max-w-3xl mx-auto">
           <div className="bg-white rounded-xl shadow-[0_1px_4px_rgba(0,0,0,0.06)] p-1">
-            <div className="bg-neutral-100 rounded-[10px] p-3.5 flex items-center justify-between">
+            <div className="bg-neutral-100 rounded-[10px] p-3.5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div className="space-y-1">
                 <p className="font-pixel-square text-base text-neutral-900">More features coming</p>
                 <p className="text-sm font-medium text-neutral-500">
                   Normie works is the first feature. Payroll, performance reviews, and the union are next.
                 </p>
               </div>
-              <p className="text-sm font-medium text-neutral-400 shrink-0 ml-4">Soon™</p>
+              <p className="text-sm font-medium text-neutral-400 shrink-0 sm:ml-4">Soon™</p>
             </div>
           </div>
         </div>

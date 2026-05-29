@@ -7,7 +7,7 @@ const outer = "inline-flex items-center rounded-md border border-black/10 bg-car
 
 const inner = (extra?: string) =>
   cn(
-    "inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-sm px-2 py-0.5 text-[14px] font-medium tracking-tight transition-all",
+    "inline-flex min-h-[28px] cursor-pointer items-center justify-center gap-1.5 rounded-sm px-2.5 py-1.5 text-sm font-medium tracking-tight whitespace-nowrap transition-all",
     "shadow-[inset_0_1px_0_rgba(255,255,255,0.15),inset_0_-1px_0_rgba(0,0,0,0.1)]",
     extra
   );
@@ -25,7 +25,8 @@ export function CustomConnectButton() {
           return (
             <div className={outer}>
               <button onClick={openConnectModal} className={inner("bg-primary text-primary-foreground hover:bg-primary/90")}>
-                Connect Wallet
+                <span className="sm:hidden">Connect</span>
+                <span className="hidden sm:inline">Connect Wallet</span>
               </button>
             </div>
           );

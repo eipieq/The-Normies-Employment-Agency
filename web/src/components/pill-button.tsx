@@ -5,15 +5,17 @@ import { cn } from "@/lib/utils";
 
 type Variant = "primary" | "secondary";
 
+const primaryOuter = "flex min-h-[34px] h-auto items-stretch rounded-md border border-black/10 bg-card p-[2px]";
+
 const primaryInner = cn(
-  "inline-flex h-[28px] cursor-pointer items-center justify-center gap-1.5 rounded-sm bg-primary px-2.5 text-sm font-medium text-primary-foreground tracking-tight transition-all",
+  "inline-flex min-h-[28px] h-auto cursor-pointer items-center justify-center gap-1.5 rounded-sm bg-primary px-3 py-2 text-sm font-medium text-primary-foreground tracking-tight text-center transition-all",
   "shadow-[inset_0_1px_0_rgba(255,255,255,0.15),inset_0_-1px_0_rgba(0,0,0,0.1)]",
   "hover:bg-primary/90 disabled:pointer-events-none disabled:opacity-50",
   "[&_svg]:pointer-events-none [&_svg]:shrink-0",
 );
 
 const secondaryFlat = cn(
-  "inline-flex h-[34px] cursor-pointer items-center justify-center gap-1.5 rounded-md border border-black/10 bg-card px-3 text-sm font-medium text-neutral-900 tracking-tight transition-colors",
+  "inline-flex min-h-[34px] h-auto cursor-pointer items-center justify-center gap-1.5 rounded-md border border-black/10 bg-card px-3 py-2 text-sm font-medium text-neutral-900 tracking-tight text-center transition-colors",
   "hover:bg-neutral-50 disabled:pointer-events-none disabled:opacity-50",
   "[&_svg]:pointer-events-none [&_svg]:shrink-0",
 );
@@ -33,8 +35,8 @@ export function PillButton({ children, className, variant = "primary", ...props 
     );
   }
   return (
-    <div className="inline-flex h-[34px] items-center rounded-md border border-black/10 bg-card p-[2px]">
-      <button className={cn(primaryInner, className)} {...props}>
+    <div className={cn(primaryOuter, className)}>
+      <button className={cn(primaryInner, "flex-1")} {...props}>
         {children}
       </button>
     </div>
@@ -56,8 +58,8 @@ export function PillButtonLink({ children, className, variant = "primary", ...pr
     );
   }
   return (
-    <div className="inline-flex h-[34px] items-center rounded-md border border-black/10 bg-card p-[2px]">
-      <a className={cn(primaryInner, "no-underline", className)} {...props}>
+    <div className={cn(primaryOuter, className)}>
+      <a className={cn(primaryInner, "no-underline flex-1")} {...props}>
         {children}
       </a>
     </div>

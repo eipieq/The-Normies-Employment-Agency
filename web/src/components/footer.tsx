@@ -2,8 +2,8 @@ import Link from "next/link";
 
 export function Footer() {
   return (
-    <footer className="border-t border-neutral-100 bg-white px-8 py-6 mt-auto">
-      <div className="max-w-3xl mx-auto flex items-center justify-between gap-4">
+    <footer className="border-t border-neutral-100 bg-white px-4 sm:px-8 py-6 mt-auto">
+      <div className="max-w-3xl mx-auto flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div
           className="text-neutral-900"
           style={{ fontFamily: "var(--font-instrument-sans)", fontWeight: 500, fontSize: "13px", letterSpacing: "-0.01em", lineHeight: 1 }}
