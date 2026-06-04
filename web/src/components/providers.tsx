@@ -12,6 +12,7 @@ import { createSiweMessage } from "viem/siwe";
 import { wagmiConfig } from "@/lib/wagmi";
 import { useState, useEffect, useCallback } from "react";
 import { AuthContext, type AuthStatus } from "@/lib/auth-context";
+import { MixpanelProvider } from "@/components/mixpanel-provider";
 
 import "@rainbow-me/rainbowkit/styles.css";
 
@@ -84,9 +85,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
       <QueryClientProvider client={queryClient}>
         <RainbowKitAuthenticationProvider adapter={authAdapter} status={authStatus}>
           <RainbowKitProvider theme={theme}>
-            <AuthContext.Provider value={{ status: authStatus, address: authAddress, refresh: fetchStatus }}>
-              {children}
-            </AuthContext.Provider>
+            <MixpanelProvider>
+              <AuthContext.Provider value={{ status: authStatus, address: authAddress, refresh: fetchStatus }}>
+                {children}
+              </AuthContext.Provider>
+            </MixpanelProvider>
           </RainbowKitProvider>
         </RainbowKitAuthenticationProvider>
       </QueryClientProvider>

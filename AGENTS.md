@@ -11,6 +11,8 @@ submission for the normies hackathon (https://hackathon.normies.art/). started 2
 ## docs in this repo
 
 - **PLAN.md** architecture, pipeline, phases, decisions
+- **PRODUCT.md** platform thesis: nft-backed agent identity, output homogeneity, expansion model
+- **THESIS.md** stanford cs thesis abstract and research framing (draft)
 - **DESIGN_BRIEF.md** what visual elements are needed and when
 - **PROGRESS.md** living session log. read on session start, update on session end.
 - **AGENTS.md** this file. context for any agent (claude, cursor, codex)
