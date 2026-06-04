@@ -6,6 +6,17 @@ format: date, agent, what shipped, what's next, blockers.
 
 ---
 
+## 2026-05-21 (cursor) — vercel analytics prod deploy
+
+shipped:
+
+- prod deploy live at https://normies.sandpark.co (`vercel deploy --prod` from repo root; project root dir is `web` in dashboard so do not run cli from `web/`).
+- build includes `@vercel/analytics`, mixpanel removed.
+
+next: future deploys from repo root (dashboard root dir is `web`).
+
+---
+
 ## 2026-05-21 (cursor) — commit + prod deploy
 
 shipped:
