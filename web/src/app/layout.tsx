@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Plus_Jakarta_Sans, Geist_Mono, Instrument_Sans } from "next/font/google";
 import localFont from "next/font/local";
 import { Providers } from "@/components/providers";
@@ -51,6 +52,7 @@ export default function RootLayout({
           <Footer />
         </Providers>
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
