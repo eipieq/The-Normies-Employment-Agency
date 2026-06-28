@@ -1,4 +1,5 @@
-import { loadFeatures, type NormieFeatures } from "../normies";
+import { getCollection } from "../collections";
+import type { CollectionSlug, Dossier } from "../collections/types";
 import { generatePersona } from "./generator";
 import { cacheGet, cacheSet } from "./cache";
 import type { Persona } from "./types";
@@ -6,14 +7,18 @@ import type { Persona } from "./types";
 export type { Persona };
 export { generatePersona };
 
-export async function getPersona(tokenId: number, features?: NormieFeatures): Promise<Persona> {
-  const f = features ?? await loadFeatures(tokenId);
-  const cv = f.history.versionCount;
+export async function getPersona(
+  collection: CollectionSlug,
+  tokenId: number,
+  dossier?: Dossier,
+): Promise<Persona> {
+  const adapter = getCollection(collection)!;
+  const d = dossier ?? await adapter.loadDossier(tokenId);
 
-  const cached = await cacheGet(tokenId, cv);
+  const cached = await cacheGet(collection, tokenId, d.cacheVersion);
   if (cached) return cached;
 
-  const persona = await generatePersona(f);
-  await cacheSet(tokenId, cv, persona);
+  const persona = await generatePersona(d);
+  await cacheSet(collection, tokenId, d.cacheVersion, persona);
   return persona;
 }

@@ -145,8 +145,9 @@ export function RosterContent() {
         {data.normies.map((n) => (
           <NormiePreviewCard
             key={n.tokenId}
+            collection="normies"
             tokenId={n.tokenId}
-            pixels={n.pixels}
+            portrait={{ kind: "pixels", pixels: n.pixels }}
             jobTitle={n.jobTitle}
             oneLiner={n.oneLiner}
           />

@@ -19,7 +19,7 @@ export function ExploreSearch() {
     }
 
     setError("");
-    router.push(`/works/${id}`);
+    router.push(`/collections/normies/works/${id}`);
   }
 
   return (

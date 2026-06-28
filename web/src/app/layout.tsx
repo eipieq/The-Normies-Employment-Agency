@@ -30,9 +30,9 @@ const geistPixelSquare = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "the normies employment agency",
+  title: "the employment agency",
   description:
-    "an ai coworker for every normie holder. generated from on-chain data, unlocked by wallet ownership.",
+    "an ai coworker for every nft holder. derived personas from on-chain data, unlocked by wallet ownership.",
 };
 
 export default function RootLayout({

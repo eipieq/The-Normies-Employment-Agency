@@ -1,7 +1,8 @@
 import { getIronSession } from "iron-session";
 import { cookies } from "next/headers";
 import { sessionOptions, type SessionData } from "@/lib/session";
-import { normies, loadFeatures, NormiesApiError } from "@/lib/normies";
+import { normies, NormiesApiError } from "@/lib/normies";
+import { normiesAdapter } from "@/lib/collections/normies";
 import { getPersona } from "@/lib/persona";
 
 export async function GET() {
@@ -22,11 +23,11 @@ export async function GET() {
 
   const results = await Promise.allSettled(
     tokenIds.map(async (id) => {
-      const features = await loadFeatures(id);
-      const persona = await getPersona(id, features);
+      const dossier = await normiesAdapter.loadDossier(id);
+      const persona = await getPersona("normies", id, dossier);
       return {
         tokenId: id,
-        pixels: features.pixels,
+        pixels: dossier.portrait.kind === "pixels" ? dossier.portrait.pixels : "",
         jobTitle: persona.jobTitle,
         oneLiner: persona.oneLiner,
       };

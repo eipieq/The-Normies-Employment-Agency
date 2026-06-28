@@ -9,7 +9,7 @@ const FIXTURES = [1, 100, 1337];
 async function one(id: number) {
   console.log(`\n--- normie #${id} ---`);
   try {
-    const p = await getPersona(id);
+    const p = await getPersona("normies", id);
     console.log(`job title:   ${p.jobTitle}`);
     console.log(`one-liner:   ${p.oneLiner}`);
     console.log(`work style:  ${p.workStyle}`);

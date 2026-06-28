@@ -1,55 +1,64 @@
-import { loadFeatures } from "@/lib/normies";
-import { getPersona } from "@/lib/persona";
-import { HOMEPAGE_EXAMPLES } from "@/lib/featured-normies";
+import { listCollections } from "@/lib/collections";
+import { loadWorks } from "@/lib/load-works";
+import { HOMEPAGE_EXAMPLES } from "@/lib/featured-collections";
 import { CardsMarquee } from "@/components/cards-marquee";
 import { PillButtonLink } from "@/components/pill-button";
 
 export const revalidate = 3600;
 
-async function loadExample(id: number) {
-  const features = await loadFeatures(id);
-  const persona = await getPersona(id, features);
-  return { id, features, persona };
+const DEV_EXAMPLES = { normies: [6303], azuki: [1] } as const;
+const SKIP_DEV_EXAMPLES = true;
+
+async function loadExample(collection: keyof typeof HOMEPAGE_EXAMPLES, id: number) {
+  const { dossier, persona } = await loadWorks(collection, id);
+  return { collection, id, portrait: dossier.portrait, persona };
 }
 
 export default async function Home() {
-  const results = await Promise.allSettled(HOMEPAGE_EXAMPLES.map(loadExample));
-  const examples = results.flatMap(r => r.status === "fulfilled" ? [r.value] : []);
+  const loads =
+    process.env.NODE_ENV === "development" && SKIP_DEV_EXAMPLES
+      ? []
+      : Object.entries(
+          process.env.NODE_ENV === "development" ? DEV_EXAMPLES : HOMEPAGE_EXAMPLES,
+        ).flatMap(([collection, ids]) =>
+          ids.map((id) => loadExample(collection as keyof typeof HOMEPAGE_EXAMPLES, id)),
+        );
+  const results = await Promise.allSettled(loads);
+  const examples = results.flatMap((r) => (r.status === "fulfilled" ? [r.value] : []));
+
+  const collections = listCollections();
 
   return (
     <main className="flex flex-1 flex-col">
-      {/* hero */}
       <section className="flex flex-col items-center justify-center text-center px-4 sm:px-6 py-14 sm:py-20 gap-5">
         <h1 className="font-pixel-square text-3xl sm:text-5xl text-neutral-900 max-w-xl leading-tight">
-          Your normie got a job.
+          Your NFT got a job.
         </h1>
         <p className="text-base text-neutral-500 max-w-lg leading-relaxed px-1">
-          We read the on-chain data (pixels, traits, canvas history) and place your normie in a role.
-          You get an employment card, a work profile, and a coworker to chat with.
+          We read on-chain data and place your token in a role. Employment card, work profile,
+          system prompt, and a coworker to chat with. Gated by wallet ownership.
         </p>
-        <div className="flex flex-col items-stretch gap-2 w-full max-w-xs sm:max-w-none sm:flex-row sm:items-center sm:justify-center mt-1">
-          <PillButtonLink href="/explore" className="w-full sm:w-auto">
-            Explore the Talented Normies
-          </PillButtonLink>
-          <PillButtonLink
-            href="https://opensea.io/collection/normies"
-            target="_blank"
-            rel="noopener noreferrer"
-            variant="secondary"
-            className="w-full sm:w-auto"
-          >
-            Explore on OpenSea
-          </PillButtonLink>
+        <div className="flex flex-col items-stretch gap-2 w-full max-w-md sm:max-w-none sm:flex-row sm:items-center sm:justify-center mt-1">
+          {collections.map((c) => (
+            <PillButtonLink
+              key={c.meta.slug}
+              href={`/collections/${c.meta.slug}/works/1`}
+              variant={c.meta.slug === "normies" ? "primary" : "secondary"}
+              className="w-full sm:w-auto capitalize"
+            >
+              Try {c.meta.name}
+            </PillButtonLink>
+          ))}
         </div>
       </section>
 
-      {/* examples */}
       {examples.length > 0 && (
         <section id="examples" className="pt-8 pb-32">
           <CardsMarquee
-            cards={examples.map(({ id, features, persona }) => ({
+            cards={examples.map(({ collection, id, portrait, persona }) => ({
+              collection,
               id,
-              pixels: features.pixels,
+              portrait,
               jobTitle: persona.jobTitle,
               oneLiner: persona.oneLiner,
             }))}
@@ -57,24 +66,35 @@ export default async function Home() {
         </section>
       )}
 
-      {/* how it works */}
       <section className="px-6 pb-32">
         <div className="max-w-3xl mx-auto">
           <div className="bg-white rounded-xl shadow-[0_1px_4px_rgba(0,0,0,0.06)] p-1">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-1">
               {[
-                { step: "01", title: "Read the dossier", body: "Pixel density, spatial distribution, trait combinations, canvas edit history. Every normie's data tells a different story." },
-                { step: "02", title: "Place them in a role", body: "An AI placement officer reads the dossier and assigns a job title, one-liner, work style, strengths, and blind spots." },
-                { step: "03", title: "Meet your coworker", body: "Connect your wallet to verify ownership. Unlock the full employment profile and open a chat with your normie." },
+                {
+                  step: "01",
+                  title: "Read the dossier",
+                  body: "Pixels and canvas for normies. Metadata traits for azuki. Every token gets a different signal.",
+                },
+                {
+                  step: "02",
+                  title: "Place them in a role",
+                  body: "A placement officer assigns job title, work style, strengths, blind spots, and a full system prompt.",
+                },
+                {
+                  step: "03",
+                  title: "Meet your coworker",
+                  body: "Connect wallet to verify ownership. Unlock the profile and chat with your derived persona.",
+                },
               ].map(({ step, title, body }, i, arr) => (
                 <div
                   key={step}
                   className={`bg-neutral-100 p-3.5 space-y-2 ${
                     i === 0
-                    ? "rounded-tl-[10px] rounded-tr-[10px] rounded-br-[5px] rounded-bl-[5px] sm:rounded-tl-[10px] sm:rounded-tr-[5px] sm:rounded-br-[5px] sm:rounded-bl-[10px]"
-                    : i === arr.length - 1
-                    ? "rounded-tl-[5px] rounded-tr-[5px] rounded-br-[10px] rounded-bl-[10px] sm:rounded-tl-[5px] sm:rounded-tr-[10px] sm:rounded-br-[10px] sm:rounded-bl-[5px]"
-                    : "rounded-[5px]"
+                      ? "rounded-tl-[10px] rounded-tr-[10px] rounded-br-[5px] rounded-bl-[5px] sm:rounded-tl-[10px] sm:rounded-tr-[5px] sm:rounded-br-[5px] sm:rounded-bl-[10px]"
+                      : i === arr.length - 1
+                        ? "rounded-tl-[5px] rounded-tr-[5px] rounded-br-[10px] rounded-bl-[10px] sm:rounded-tl-[5px] sm:rounded-tr-[10px] sm:rounded-br-[10px] sm:rounded-bl-[5px]"
+                        : "rounded-[5px]"
                   }`}
                 >
                   <p className="font-mono text-sm text-neutral-400">{step}</p>
@@ -82,23 +102,6 @@ export default async function Home() {
                   <p className="text-sm font-medium text-neutral-500 leading-relaxed">{body}</p>
                 </div>
               ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* coming soon */}
-      <section className="px-6 pb-20">
-        <div className="max-w-3xl mx-auto">
-          <div className="bg-white rounded-xl shadow-[0_1px_4px_rgba(0,0,0,0.06)] p-1">
-            <div className="bg-neutral-100 rounded-[10px] p-3.5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <div className="space-y-1">
-                <p className="font-pixel-square text-base text-neutral-900">More features coming</p>
-                <p className="text-sm font-medium text-neutral-500">
-                  Normie works is the first feature. Payroll, performance reviews, and the union are next.
-                </p>
-              </div>
-              <p className="text-sm font-medium text-neutral-400 shrink-0 sm:ml-4">Soon™</p>
             </div>
           </div>
         </div>

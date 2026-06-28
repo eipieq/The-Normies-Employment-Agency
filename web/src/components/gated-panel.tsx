@@ -6,11 +6,12 @@ import { Lock, Copy, Check, ChatCircle } from "@phosphor-icons/react";
 import { useAuth } from "@/lib/auth-context";
 import { cn } from "@/lib/utils";
 import { PillButtonLink } from "@/components/pill-button";
+import type { CollectionSlug } from "@/lib/collections";
 
 const pillInner = cn(
   "inline-flex h-[28px] cursor-pointer items-center justify-center gap-1.5 rounded-sm bg-primary px-2.5 text-sm font-medium text-primary-foreground tracking-tight transition-all",
   "shadow-[inset_0_1px_0_rgba(255,255,255,0.15),inset_0_-1px_0_rgba(0,0,0,0.1)]",
-  "hover:bg-primary/90"
+  "hover:bg-primary/90",
 );
 const pillOuter = "inline-flex h-[34px] items-center rounded-md border border-black/10 bg-card p-[2px]";
 
@@ -23,7 +24,15 @@ type GatedData = {
 
 type Status = "idle" | "loading" | "not-owner" | "ready" | "error";
 
-export function GatedPanel({ tokenId }: { tokenId: number }) {
+export function GatedPanel({
+  collection,
+  tokenId,
+  label,
+}: {
+  collection: CollectionSlug;
+  tokenId: number;
+  label: string;
+}) {
   const { status: authStatus } = useAuth();
   const [data, setData] = useState<GatedData | null>(null);
   const [status, setStatus] = useState<Status>("idle");
@@ -36,15 +45,21 @@ export function GatedPanel({ tokenId }: { tokenId: number }) {
       return;
     }
     setStatus("loading");
-    fetch(`/api/works/persona/${tokenId}`)
+    fetch(`/api/collections/${collection}/works/persona/${tokenId}`)
       .then(async (res) => {
-        if (res.status === 403) { setStatus("not-owner"); return; }
-        if (!res.ok) { setStatus("error"); return; }
+        if (res.status === 403) {
+          setStatus("not-owner");
+          return;
+        }
+        if (!res.ok) {
+          setStatus("error");
+          return;
+        }
         setData(await res.json());
         setStatus("ready");
       })
       .catch(() => setStatus("error"));
-  }, [authStatus, tokenId]);
+  }, [authStatus, collection, tokenId]);
 
   function copyPrompt() {
     if (!data) return;
@@ -54,7 +69,6 @@ export function GatedPanel({ tokenId }: { tokenId: number }) {
     });
   }
 
-  // unauthenticated: show connect/sign button
   if (authStatus === "loading" || authStatus === "unauthenticated" || status === "idle") {
     return (
       <div className="rounded-[5px] bg-neutral-50 p-3.5 space-y-3">
@@ -87,7 +101,6 @@ export function GatedPanel({ tokenId }: { tokenId: number }) {
     );
   }
 
-  // connected + loading
   if (status === "loading") {
     return (
       <div className="rounded-[5px] bg-neutral-50 p-3.5">
@@ -96,22 +109,18 @@ export function GatedPanel({ tokenId }: { tokenId: number }) {
     );
   }
 
-  // connected but not the owner
   if (status === "not-owner") {
     return (
       <div className="rounded-[5px] bg-neutral-50 p-3.5 flex items-start gap-2.5">
         <Lock size={16} className="text-neutral-300 mt-0.5 shrink-0" />
         <div className="space-y-0.5">
-          <p className="text-sm font-medium text-neutral-500">not your normie</p>
-          <p className="text-sm text-neutral-400">
-            this normie belongs to a different wallet.
-          </p>
+          <p className="text-sm font-medium text-neutral-500">not your {label}</p>
+          <p className="text-sm text-neutral-400">this token belongs to a different wallet.</p>
         </div>
       </div>
     );
   }
 
-  // error
   if (status === "error") {
     return (
       <div className="rounded-[5px] bg-neutral-50 p-3.5">
@@ -120,52 +129,36 @@ export function GatedPanel({ tokenId }: { tokenId: number }) {
     );
   }
 
-  // unlocked
   if (status === "ready" && data) {
     return (
       <div className="space-y-3">
-        {/* work style */}
         <div className="space-y-1">
-          <p className="text-sm font-semibold text-neutral-400 uppercase tracking-wide">
-            work style
-          </p>
+          <p className="text-sm font-semibold text-neutral-400 uppercase tracking-wide">work style</p>
           <p className="text-sm text-neutral-600 leading-relaxed">{data.workStyle}</p>
         </div>
 
-        {/* strengths + blind spots */}
         <div className="grid grid-cols-2 gap-3">
           <div className="space-y-1.5">
-            <p className="text-sm font-semibold text-neutral-400 uppercase tracking-wide">
-              strengths
-            </p>
+            <p className="text-sm font-semibold text-neutral-400 uppercase tracking-wide">strengths</p>
             <ul className="space-y-1">
               {data.strengths.map((s) => (
-                <li key={s} className="text-sm text-neutral-500 leading-relaxed">
-                  {s}
-                </li>
+                <li key={s} className="text-sm text-neutral-500 leading-relaxed">{s}</li>
               ))}
             </ul>
           </div>
           <div className="space-y-1.5">
-            <p className="text-sm font-semibold text-neutral-400 uppercase tracking-wide">
-              blind spots
-            </p>
+            <p className="text-sm font-semibold text-neutral-400 uppercase tracking-wide">blind spots</p>
             <ul className="space-y-1">
               {data.blindSpots.map((s) => (
-                <li key={s} className="text-sm text-neutral-500 leading-relaxed">
-                  {s}
-                </li>
+                <li key={s} className="text-sm text-neutral-500 leading-relaxed">{s}</li>
               ))}
             </ul>
           </div>
         </div>
 
-        {/* system prompt */}
         <div className="space-y-1.5">
           <div className="flex items-center justify-between">
-            <p className="text-sm font-semibold text-neutral-400 uppercase tracking-wide">
-              system prompt
-            </p>
+            <p className="text-sm font-semibold text-neutral-400 uppercase tracking-wide">system prompt</p>
             <button
               onClick={copyPrompt}
               className="flex items-center gap-1 text-sm text-neutral-400 hover:text-neutral-600 transition-colors"
@@ -180,7 +173,7 @@ export function GatedPanel({ tokenId }: { tokenId: number }) {
         </div>
 
         <div className="flex justify-center pt-1">
-          <PillButtonLink href={`/works/${tokenId}/chat`}>
+          <PillButtonLink href={`/collections/${collection}/works/${tokenId}/chat`}>
             <ChatCircle size={16} weight="regular" />
             meet your coworker
           </PillButtonLink>

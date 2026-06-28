@@ -1,8 +1,11 @@
-import { normies } from "./normies";
+import { getCollection, type CollectionSlug } from "./collections";
 
-// checks whether address is the current on-chain owner of tokenId.
-// always fetches live — never trust cached owner for gating decisions.
-export async function isOwner(tokenId: number, address: string): Promise<boolean> {
-  const owner = await normies.owner(tokenId);
-  return owner.owner.toLowerCase() === address.toLowerCase();
+export async function isOwner(
+  collection: CollectionSlug,
+  tokenId: number,
+  address: string,
+): Promise<boolean> {
+  const adapter = getCollection(collection);
+  if (!adapter) return false;
+  return adapter.isOwner(tokenId, address);
 }

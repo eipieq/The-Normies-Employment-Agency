@@ -4,7 +4,7 @@ const id = parseInt(process.argv[2] ?? "1");
 
 async function main() {
   console.log(`\n--- normie #${id} ---`);
-  const p = await getPersona(id);
+  const p = await getPersona("normies", id);
   console.log("job title:  ", p.jobTitle);
   console.log("one-liner:  ", p.oneLiner);
   console.log("work style: ", p.workStyle);

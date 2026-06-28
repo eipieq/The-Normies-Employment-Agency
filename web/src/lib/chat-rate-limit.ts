@@ -17,11 +17,11 @@ function useRedis() {
 
 export async function checkChatRateLimit(
   address: string,
-  tokenId: number,
+  scope: string | number,
 ): Promise<{ ok: boolean; remaining: number }> {
   if (!useRedis()) return { ok: true, remaining: LIMIT };
 
-  const key = `chat:${address.toLowerCase()}:${tokenId}`;
+  const key = `chat:${address.toLowerCase()}:${scope}`;
   const redis = new Redis({ url: redisUrl()!, token: redisToken()! });
   const count = await redis.incr(key);
   if (count === 1) await redis.expire(key, WINDOW_SEC);

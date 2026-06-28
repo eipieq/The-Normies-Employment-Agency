@@ -2,24 +2,46 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport, isTextUIPart } from "ai";
 import { ArrowLeft, PaperPlaneTilt } from "@phosphor-icons/react";
 import { NormiePortrait } from "./normie-portrait";
 import { PillButton } from "./pill-button";
+import type { CollectionSlug, Portrait } from "@/lib/collections";
 
 type Props = {
+  collection: CollectionSlug;
+  label: string;
   tokenId: number;
   jobTitle: string;
-  pixels: string;
+  portrait: Portrait;
 };
 
-export function ChatSurface({ tokenId, jobTitle, pixels }: Props) {
+function ChatPortrait({ portrait, alt }: { portrait: Portrait; alt: string }) {
+  if (portrait.kind === "pixels") {
+    return <NormiePortrait pixels={portrait.pixels} className="w-10 h-10 rounded-lg" />;
+  }
+  return (
+    <Image
+      src={portrait.src}
+      alt={alt}
+      width={40}
+      height={40}
+      className="w-10 h-10 rounded-lg object-cover"
+      unoptimized
+    />
+  );
+}
+
+export function ChatSurface({ collection, label, tokenId, jobTitle, portrait }: Props) {
   const [input, setInput] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const { messages, sendMessage, status, error } = useChat({
-    transport: new DefaultChatTransport({ api: `/api/works/chat/${tokenId}` }),
+    transport: new DefaultChatTransport({
+      api: `/api/collections/${collection}/works/chat/${tokenId}`,
+    }),
   });
 
   const busy = status === "streaming" || status === "submitted";
@@ -37,84 +59,60 @@ export function ChatSurface({ tokenId, jobTitle, pixels }: Props) {
   }
 
   return (
-    <div className="flex h-[calc(100dvh-5rem)] w-full max-w-lg flex-col rounded-xl bg-white shadow-[0_1px_4px_rgba(0,0,0,0.06)] p-1">
-      {/* header */}
-      <div className="flex items-center gap-3 rounded-t-[10px] bg-neutral-100 p-3.5">
+    <div className="flex flex-1 flex-col w-full max-w-2xl mx-auto">
+      <div className="flex items-center gap-3 px-4 py-3 border-b border-neutral-100">
         <Link
-          href={`/works/${tokenId}`}
+          href={`/collections/${collection}/works/${tokenId}`}
           className="text-neutral-400 hover:text-neutral-600 transition-colors"
-          aria-label="back to employment card"
         >
           <ArrowLeft size={20} />
         </Link>
-        <div className="h-10 w-10 shrink-0 overflow-hidden rounded-md bg-white">
-          <NormiePortrait pixels={pixels} className="block h-full w-full" />
-        </div>
-        <div className="min-w-0 flex-1">
-          <p className="font-mono text-sm text-neutral-400 tabular-nums">
-            #{String(tokenId).padStart(4, "0")}
+        <ChatPortrait portrait={portrait} alt={`${label} #${tokenId}`} />
+        <div className="min-w-0">
+          <p className="text-sm font-medium text-neutral-900 truncate capitalize">{jobTitle}</p>
+          <p className="text-sm text-neutral-400">
+            {label} #{tokenId}
           </p>
-          <h1 className="truncate font-pixel-square text-lg text-neutral-900 capitalize">
-            {jobTitle}
-          </h1>
         </div>
       </div>
 
-      {/* messages */}
-      <div className="flex-1 space-y-3 overflow-y-auto bg-neutral-50 p-3.5">
+      <div className="flex-1 overflow-y-auto px-4 py-6 space-y-4 min-h-[50vh]">
         {messages.length === 0 && (
-          <p className="text-sm text-neutral-400 text-center pt-8">
-            say something. they&apos;re on the clock.
+          <p className="text-sm text-neutral-400 text-center py-8">
+            say something. your {label} is on the clock.
           </p>
         )}
-
         {messages.map((m) => {
           const text = m.parts.filter(isTextUIPart).map((p) => p.text).join("");
           if (!text) return null;
           const isUser = m.role === "user";
           return (
-            <div key={m.id} className={isUser ? "flex justify-end" : "flex justify-start"}>
+            <div key={m.id} className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
               <div
-                className={
+                className={`max-w-[85%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed ${
                   isUser
-                    ? "max-w-[85%] rounded-xl bg-primary px-3.5 py-2.5 text-sm text-primary-foreground leading-relaxed"
-                    : "max-w-[85%] rounded-xl bg-white px-3.5 py-2.5 text-sm text-neutral-700 leading-relaxed shadow-[0_1px_4px_rgba(0,0,0,0.06)]"
-                }
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-neutral-100 text-neutral-800"
+                }`}
               >
                 {text}
               </div>
             </div>
           );
         })}
-
-        {busy && messages.at(-1)?.role === "user" && (
-          <div className="flex justify-start">
-            <div className="rounded-xl bg-white px-3.5 py-2.5 text-sm text-neutral-400 shadow-[0_1px_4px_rgba(0,0,0,0.06)]">
-              typing...
-            </div>
-          </div>
-        )}
-
         {error && (
-          <p className="text-sm text-red-500 text-center">
-            {error.message.includes("429") ? "rate limit hit. try again later." : "something broke."}
-          </p>
+          <p className="text-sm text-red-500 text-center">something went wrong. try again.</p>
         )}
-
         <div ref={bottomRef} />
       </div>
 
-      {/* input */}
-      <form
-        onSubmit={onSubmit}
-        className="flex items-center gap-2 rounded-b-[10px] border-t border-neutral-100 bg-white p-3.5"
-      >
+      <form onSubmit={onSubmit} className="px-4 py-3 border-t border-neutral-100 flex gap-2">
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="message your coworker..."
+          placeholder={`message your ${label}...`}
+          className="flex-1 rounded-full border border-neutral-200 bg-white px-4 py-2 text-sm outline-none focus:border-primary"
           disabled={busy}
-          className="flex-1 rounded-md border border-black/10 bg-neutral-50 px-3 py-2 text-sm text-neutral-900 placeholder:text-neutral-400 outline-none focus:border-primary/40 disabled:opacity-50"
         />
         <PillButton type="submit" disabled={busy || !input.trim()}>
           <PaperPlaneTilt size={16} weight="regular" />

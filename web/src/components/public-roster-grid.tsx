@@ -27,7 +27,7 @@ export function PublicRosterGrid({ address, tokenIds }: Props) {
           {tokenIds.map((id) => (
             <Link
               key={id}
-              href={`/works/${id}`}
+              href={`/collections/normies/works/${id}`}
               className="group block bg-white rounded-xl p-1 space-y-1 shadow-[0_1px_4px_rgba(0,0,0,0.06)] hover:shadow-[0_2px_8px_rgba(0,0,0,0.09)] transition-shadow"
             >
               <div className="overflow-hidden bg-neutral-100 rounded-t-[10px] rounded-b-[5px]">
