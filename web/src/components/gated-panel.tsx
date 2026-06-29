@@ -6,6 +6,7 @@ import { Lock, Copy, Check, ChatCircle } from "@phosphor-icons/react";
 import { useAuth } from "@/lib/auth-context";
 import { cn } from "@/lib/utils";
 import { PillButtonLink } from "@/components/pill-button";
+import { DecisionLog } from "@/components/decision-log";
 import type { CollectionSlug } from "@/lib/collections";
 
 const pillInner = cn(
@@ -177,6 +178,10 @@ export function GatedPanel({
             <ChatCircle size={16} weight="regular" />
             meet your coworker
           </PillButtonLink>
+        </div>
+
+        <div className="border-t border-neutral-100 pt-3">
+          <DecisionLog collection={collection} tokenId={tokenId} />
         </div>
       </div>
     );
