@@ -1,4 +1,5 @@
 import { loadFeatures, normies, NormiesApiError, type NormieFeatures } from "../normies";
+import { getDepartmentFromFeatures } from "../cluster";
 import type { CollectionAdapter, Dossier } from "./types";
 
 const ENERGY_LABEL: Record<string, string> = {
@@ -92,6 +93,15 @@ export const normiesAdapter: CollectionAdapter = {
   async isOwner(tokenId, address) {
     const owner = await normies.owner(tokenId);
     return owner.owner.toLowerCase() === address.toLowerCase();
+  },
+
+  async getDepartment(tokenId) {
+    try {
+      const f = await loadFeatures(tokenId);
+      return getDepartmentFromFeatures(f);
+    } catch {
+      return null;
+    }
   },
 };
 

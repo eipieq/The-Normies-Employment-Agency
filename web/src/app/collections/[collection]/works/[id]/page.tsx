@@ -39,6 +39,7 @@ export default async function CollectionWorksPage({ params }: Props) {
   }
 
   const { dossier, persona } = data;
+  const department = await adapter.getDepartment?.(tokenId).catch(() => null) ?? null;
 
   return (
     <main className="flex flex-1 flex-col items-center justify-start pt-12 pb-24 px-4">
@@ -49,6 +50,7 @@ export default async function CollectionWorksPage({ params }: Props) {
         persona={persona}
         tags={dossier.tags}
         displayName={dossier.displayName}
+        department={department}
       />
     </main>
   );

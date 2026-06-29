@@ -5,6 +5,7 @@ import { ShareButton } from "./share-button";
 import { GatedPanel } from "./gated-panel";
 import type { Persona } from "@/lib/persona";
 import type { CollectionMeta, Portrait } from "@/lib/collections";
+import type { ClusterResult } from "@/lib/cluster";
 
 type Props = {
   collection: CollectionMeta;
@@ -13,6 +14,7 @@ type Props = {
   persona: Persona;
   tags: string[];
   displayName?: string | null;
+  department?: ClusterResult | null;
 };
 
 function Portrait({ portrait, alt }: { portrait: Portrait; alt: string }) {
@@ -38,6 +40,7 @@ export function EmploymentCard({
   persona,
   tags,
   displayName,
+  department,
 }: Props) {
   return (
     <div className="w-full max-w-sm rounded-xl bg-white shadow-[0_1px_4px_rgba(0,0,0,0.06)] p-1 space-y-1">
@@ -49,9 +52,16 @@ export function EmploymentCard({
       </div>
 
       <div className="bg-neutral-100 rounded-[5px] p-3.5 space-y-3">
-        <p className="font-mono text-sm text-neutral-400 tabular-nums">
-          #{String(tokenId).padStart(4, "0")}
-        </p>
+        <div className="flex items-center justify-between">
+          <p className="font-mono text-sm text-neutral-400 tabular-nums">
+            #{String(tokenId).padStart(4, "0")}
+          </p>
+          {department && (
+            <span className="inline-flex items-center rounded-full bg-primary/10 px-2.5 py-1 text-[12px] font-medium text-primary capitalize">
+              {department.department}
+            </span>
+          )}
+        </div>
 
         <h1 className="font-pixel-square text-2xl text-neutral-900 leading-snug capitalize">
           {persona.jobTitle}

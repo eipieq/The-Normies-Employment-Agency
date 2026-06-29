@@ -1,4 +1,5 @@
 import type { Persona } from "../persona/types";
+import type { ClusterResult } from "../cluster";
 
 export type CollectionSlug = "normies" | "azuki";
 
@@ -30,6 +31,7 @@ export type CollectionAdapter = {
   meta: CollectionMeta;
   loadDossier(tokenId: number): Promise<Dossier>;
   isOwner(tokenId: number, address: string): Promise<boolean>;
+  getDepartment?(tokenId: number): Promise<ClusterResult | null>;
 };
 
 export type PersonaResult = {
