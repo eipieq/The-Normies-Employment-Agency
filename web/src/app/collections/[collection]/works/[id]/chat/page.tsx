@@ -6,6 +6,7 @@ import { sessionOptions, type SessionData } from "@/lib/session";
 import { getCollection, parseTokenId, NormiesApiError } from "@/lib/collections";
 import { isOwner } from "@/lib/ownership";
 import { getPersona } from "@/lib/persona";
+import { loadHistory } from "@/lib/chat-history";
 import { ChatSurface } from "@/components/chat-surface";
 
 type Props = { params: Promise<{ collection: string; id: string }> };
@@ -49,7 +50,10 @@ export default async function CollectionChatPage({ params }: Props) {
     throw e;
   }
 
-  const persona = await getPersona(adapter.meta.slug, tokenId, dossier);
+  const [persona, history] = await Promise.all([
+    getPersona(adapter.meta.slug, tokenId, dossier),
+    loadHistory(adapter.meta.slug, tokenId, session.address),
+  ]);
 
   return (
     <main className="flex flex-1 flex-col pt-6 pb-12">
@@ -59,6 +63,7 @@ export default async function CollectionChatPage({ params }: Props) {
         tokenId={tokenId}
         jobTitle={persona.jobTitle}
         portrait={dossier.portrait}
+        initialHistory={history}
       />
     </main>
   );

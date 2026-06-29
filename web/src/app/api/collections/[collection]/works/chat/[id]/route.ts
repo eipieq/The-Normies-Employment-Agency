@@ -1,11 +1,12 @@
 import { getIronSession } from "iron-session";
 import { cookies } from "next/headers";
-import { convertToModelMessages, streamText, type UIMessage } from "ai";
+import { convertToModelMessages, isTextUIPart, streamText, type UIMessage } from "ai";
 import { sessionOptions, type SessionData } from "@/lib/session";
 import { getCollection, parseTokenId, NormiesApiError } from "@/lib/collections";
 import { isOwner } from "@/lib/ownership";
 import { getPersona } from "@/lib/persona";
 import { checkChatRateLimit } from "@/lib/chat-rate-limit";
+import { appendHistory } from "@/lib/chat-history";
 import { veniceModel } from "@/lib/venice";
 
 type Params = { params: Promise<{ collection: string; id: string }> };
@@ -46,12 +47,24 @@ export async function POST(req: Request, { params }: Params) {
   }
 
   const persona = await getPersona(adapter.meta.slug, tokenId, dossier);
+  const lastUser = messages.findLast((m) => m.role === "user");
+  const lastUserContent = lastUser?.parts.filter(isTextUIPart).map((p) => p.text).join("") ?? "";
+  const address = session.address!;
 
   const result = streamText({
     model: veniceModel(),
     system: persona.systemPrompt,
     messages: await convertToModelMessages(messages),
     maxOutputTokens: 1024,
+    async onFinish({ text }) {
+      await appendHistory(
+        adapter.meta.slug,
+        tokenId,
+        address,
+        lastUserContent,
+        text,
+      ).catch(() => {});
+    },
   });
 
   return result.toUIMessageStreamResponse({

@@ -9,6 +9,7 @@ import { ArrowLeft, PaperPlaneTilt } from "@phosphor-icons/react";
 import { NormiePortrait } from "./normie-portrait";
 import { PillButton } from "./pill-button";
 import type { CollectionSlug, Portrait } from "@/lib/collections";
+import type { StoredMessage } from "@/lib/chat-history";
 
 type Props = {
   collection: CollectionSlug;
@@ -16,6 +17,7 @@ type Props = {
   tokenId: number;
   jobTitle: string;
   portrait: Portrait;
+  initialHistory?: StoredMessage[];
 };
 
 function ChatPortrait({ portrait, alt }: { portrait: Portrait; alt: string }) {
@@ -34,14 +36,21 @@ function ChatPortrait({ portrait, alt }: { portrait: Portrait; alt: string }) {
   );
 }
 
-export function ChatSurface({ collection, label, tokenId, jobTitle, portrait }: Props) {
+export function ChatSurface({ collection, label, tokenId, jobTitle, portrait, initialHistory = [] }: Props) {
   const [input, setInput] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);
+
+  const seedMessages = initialHistory.map((m, i) => ({
+    id: `h-${m.ts}-${i}`,
+    role: m.role as "user" | "assistant",
+    parts: [{ type: "text" as const, text: m.content }],
+  }));
 
   const { messages, sendMessage, status, error } = useChat({
     transport: new DefaultChatTransport({
       api: `/api/collections/${collection}/works/chat/${tokenId}`,
     }),
+    messages: seedMessages,
   });
 
   const busy = status === "streaming" || status === "submitted";
@@ -81,6 +90,9 @@ export function ChatSurface({ collection, label, tokenId, jobTitle, portrait }: 
           <p className="text-sm text-neutral-400 text-center py-8">
             say something. your {label} is on the clock.
           </p>
+        )}
+        {messages.length > 0 && initialHistory.length > 0 && messages.length === initialHistory.length && (
+          <p className="text-sm text-neutral-300 text-center pb-4">— previous session —</p>
         )}
         {messages.map((m) => {
           const text = m.parts.filter(isTextUIPart).map((p) => p.text).join("");

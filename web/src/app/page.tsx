@@ -21,7 +21,7 @@ export default async function Home() {
       : Object.entries(
           process.env.NODE_ENV === "development" ? DEV_EXAMPLES : HOMEPAGE_EXAMPLES,
         ).flatMap(([collection, ids]) =>
-          ids.map((id) => loadExample(collection as keyof typeof HOMEPAGE_EXAMPLES, id)),
+          ids.map((id: number) => loadExample(collection as keyof typeof HOMEPAGE_EXAMPLES, id)),
         );
   const results = await Promise.allSettled(loads);
   const examples = results.flatMap((r) => (r.status === "fulfilled" ? [r.value] : []));
