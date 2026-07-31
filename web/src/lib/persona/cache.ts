@@ -7,7 +7,7 @@ import type { Persona } from "./types";
 const CACHE_DIR = path.join(process.cwd(), ".cache", "personas");
 
 function cacheKey(collection: CollectionSlug, tokenId: number, version: string) {
-  return `persona:${collection}:${tokenId}:${version}`;
+  return `agency:persona:${collection}:${tokenId}:${version}`;
 }
 
 function fsPath(collection: CollectionSlug, tokenId: number, version: string) {

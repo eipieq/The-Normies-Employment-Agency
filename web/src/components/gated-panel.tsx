@@ -39,11 +39,21 @@ export function GatedPanel({
   const [status, setStatus] = useState<Status>("idle");
   const [copied, setCopied] = useState(false);
   const [subscribing, setSubscribing] = useState(false);
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
+
+  // dev-only: ?preview=subscribe|not-owner|ready|error to force a state
+  useEffect(() => {
+    if (process.env.NODE_ENV === "production") return;
+    const preview = new URLSearchParams(window.location.search).get("preview") as Status | null;
+    if (preview) setStatus(preview);
+  }, []);
 
   useEffect(() => {
+    if (process.env.NODE_ENV !== "production" &&
+        new URLSearchParams(window.location.search).get("preview")) return;
     if (authStatus !== "authenticated") {
       setData(null);
-      setStatus("idle");
+      setStatus((s) => s === "subscribe" ? s : "idle");
       return;
     }
     setStatus("loading");
@@ -77,14 +87,61 @@ export function GatedPanel({
 
   async function openCheckout() {
     setSubscribing(true);
+    setCheckoutError(null);
     try {
       const res = await fetch("/api/subscriptions/checkout", { method: "POST" });
-      if (!res.ok) { setSubscribing(false); return; }
+      if (res.status === 401) {
+        setCheckoutError("connect your wallet first to subscribe.");
+        setSubscribing(false);
+        return;
+      }
+      if (!res.ok) {
+        setCheckoutError("something went wrong. try again.");
+        setSubscribing(false);
+        return;
+      }
       const { paymentUrl } = (await res.json()) as { paymentUrl: string };
       window.location.href = paymentUrl;
     } catch {
+      setCheckoutError("something went wrong. try again.");
       setSubscribing(false);
     }
+  }
+
+  if (status === "subscribe") {
+    return (
+      <div className="rounded-[5px] bg-neutral-50 p-3.5 space-y-3">
+        <div className="flex items-start gap-2.5">
+          <CreditCard size={16} className="text-neutral-300 mt-0.5 shrink-0" />
+          <div className="space-y-0.5">
+            <p className="text-sm font-medium text-neutral-500">holder pass required</p>
+            <p className="text-sm text-neutral-400">
+              unlock work style · strengths · system prompt · chat · decisions for all your tokens.
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center gap-3">
+          <div className={pillOuter}>
+            <button
+              onClick={openCheckout}
+              disabled={subscribing}
+              className={pillInner}
+            >
+              {subscribing
+                ? <Spinner size={14} className="animate-spin" />
+                : <ArrowSquareOut size={14} />}
+              {subscribing ? "redirecting..." : "subscribe · $14.99 / month"}
+            </button>
+          </div>
+        </div>
+        {checkoutError && (
+          <p className="text-[11px] text-red-400">{checkoutError}</p>
+        )}
+        <p className="text-[11px] text-neutral-400">
+          pay in any crypto via NOWPayments. access activates within minutes of payment.
+        </p>
+      </div>
+    );
   }
 
   if (authStatus === "loading" || authStatus === "unauthenticated" || status === "idle") {
@@ -135,39 +192,6 @@ export function GatedPanel({
           <p className="text-sm font-medium text-neutral-500">not your {label}</p>
           <p className="text-sm text-neutral-400">this token belongs to a different wallet.</p>
         </div>
-      </div>
-    );
-  }
-
-  if (status === "subscribe") {
-    return (
-      <div className="rounded-[5px] bg-neutral-50 p-3.5 space-y-3">
-        <div className="flex items-start gap-2.5">
-          <CreditCard size={16} className="text-neutral-300 mt-0.5 shrink-0" />
-          <div className="space-y-0.5">
-            <p className="text-sm font-medium text-neutral-500">holder pass required</p>
-            <p className="text-sm text-neutral-400">
-              unlock work style · strengths · system prompt · chat · decisions for all your tokens.
-            </p>
-          </div>
-        </div>
-        <div className="flex items-center gap-3">
-          <div className={pillOuter}>
-            <button
-              onClick={openCheckout}
-              disabled={subscribing}
-              className={pillInner}
-            >
-              {subscribing
-                ? <Spinner size={14} className="animate-spin" />
-                : <ArrowSquareOut size={14} />}
-              {subscribing ? "redirecting..." : "subscribe · $9.99 / month"}
-            </button>
-          </div>
-        </div>
-        <p className="text-[11px] text-neutral-400">
-          pay in any crypto via NOWPayments. access activates within minutes of payment.
-        </p>
       </div>
     );
   }

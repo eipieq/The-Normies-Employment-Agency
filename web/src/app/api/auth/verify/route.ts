@@ -9,10 +9,23 @@ export async function POST(req: Request) {
 
   const session = await getIronSession<SessionData>(await cookies(), sessionOptions);
 
-  // parse the siwe message and validate nonce
   const parsed = parseSiweMessage(message);
+
+  // nonce must match session
   if (!parsed.nonce || parsed.nonce !== session.nonce) {
     return new Response("invalid nonce", { status: 422 });
+  }
+
+  // domain must match request origin
+  const origin = req.headers.get("origin");
+  const expectedDomain = origin ? new URL(origin).hostname : null;
+  if (!expectedDomain || parsed.domain !== expectedDomain) {
+    return new Response("domain mismatch", { status: 422 });
+  }
+
+  // message must not be expired
+  if (parsed.expirationTime && new Date(parsed.expirationTime) < new Date()) {
+    return new Response("message expired", { status: 422 });
   }
 
   // recover signer address from signature

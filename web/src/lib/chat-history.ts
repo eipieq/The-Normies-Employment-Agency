@@ -17,11 +17,11 @@ function redis() {
 }
 
 function historyKey(collection: CollectionSlug, tokenId: number, address: string) {
-  return `history:${collection}:${tokenId}:${address.toLowerCase()}`;
+  return `agency:history:${collection}:${tokenId}:${address.toLowerCase()}`;
 }
 
 function perfKey(collection: CollectionSlug, tokenId: number) {
-  return `perf:${collection}:${tokenId}`;
+  return `agency:perf:${collection}:${tokenId}`;
 }
 
 export async function loadHistory(

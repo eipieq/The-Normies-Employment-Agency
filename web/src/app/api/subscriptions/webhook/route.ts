@@ -50,8 +50,7 @@ export async function POST(req: Request) {
   if (body.payment_status === "finished") {
     const address = body.order_id;
     if (address?.startsWith("0x")) {
-      const planId = body.plan_id ?? process.env.NOWPAYMENTS_PLAN_ID ?? "unknown";
-      await activateSubscription(address, planId);
+      await activateSubscription(address, body.plan_id ?? "invoice");
     }
   }
 

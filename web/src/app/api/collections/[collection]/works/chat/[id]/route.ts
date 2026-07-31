@@ -39,7 +39,8 @@ export async function POST(req: Request, { params }: Params) {
     });
   }
 
-  const { messages } = (await req.json()) as { messages: UIMessage[] };
+  const { messages: rawMessages } = (await req.json()) as { messages: UIMessage[] };
+  const messages = rawMessages.slice(-20); // cap at last 20 turns server-side
 
   let dossier;
   try {

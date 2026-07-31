@@ -21,7 +21,7 @@ export async function checkChatRateLimit(
 ): Promise<{ ok: boolean; remaining: number }> {
   if (!useRedis()) return { ok: true, remaining: LIMIT };
 
-  const key = `chat:${address.toLowerCase()}:${scope}`;
+  const key = `agency:chat:${address.toLowerCase()}:${scope}`;
   const redis = new Redis({ url: redisUrl()!, token: redisToken()! });
   const count = await redis.incr(key);
   if (count === 1) await redis.expire(key, WINDOW_SEC);

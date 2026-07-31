@@ -5,6 +5,7 @@ import { getCollection, parseTokenId, NormiesApiError } from "@/lib/collections"
 import { isOwner } from "@/lib/ownership";
 import { getPersona } from "@/lib/persona";
 import { isSubscribed } from "@/lib/subscription";
+import { checkChatRateLimit } from "@/lib/chat-rate-limit";
 import {
   generateDecision,
   hashDecision,
@@ -31,6 +32,9 @@ export async function POST(req: Request, { params }: Params) {
   ]);
   if (!owns) return new Response("not owner", { status: 403 });
   if (!subscribed) return new Response("subscription required", { status: 402 });
+
+  const { ok } = await checkChatRateLimit(session.address, `decisions:${adapter.meta.slug}:${tokenId}`);
+  if (!ok) return new Response("rate limit exceeded", { status: 429 });
 
   let dossier;
   try {
