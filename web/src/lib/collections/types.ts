@@ -32,6 +32,7 @@ export type CollectionAdapter = {
   loadDossier(tokenId: number): Promise<Dossier>;
   isOwner(tokenId: number, address: string): Promise<boolean>;
   getDepartment?(tokenId: number): Promise<ClusterResult | null>;
+  getHoldings?(address: string): Promise<number[]>;
 };
 
 export type PersonaResult = {

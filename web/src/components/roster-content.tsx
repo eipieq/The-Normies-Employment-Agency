@@ -7,13 +7,17 @@ import { useAuth } from "@/lib/auth-context";
 import { NormiePreviewCard } from "./normie-preview-card";
 import { PillButtonLink } from "./pill-button";
 import { cn } from "@/lib/utils";
+import type { Portrait, CollectionSlug } from "@/lib/collections";
 
-type RosterNormie = {
+type RosterItem = {
   tokenId: number;
-  pixels: string;
+  portrait: Portrait;
   jobTitle: string;
   oneLiner: string;
 };
+
+type NormiesData = { address: string; normies: Array<{ tokenId: number; pixels: string; jobTitle: string; oneLiner: string }> };
+type AzukiData = { address: string; items: RosterItem[] };
 
 const pillInner = cn(
   "inline-flex h-[28px] cursor-pointer items-center justify-center gap-1.5 rounded-sm bg-primary px-2.5 text-sm font-medium text-primary-foreground tracking-tight transition-all",
@@ -26,31 +30,44 @@ function shortAddr(addr: string) {
   return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
 }
 
+const COLLECTIONS: { slug: CollectionSlug; label: string }[] = [
+  { slug: "normies", label: "normies" },
+  { slug: "azuki", label: "azuki" },
+];
+
 export function RosterContent() {
   const { status } = useAuth();
-  const [data, setData] = useState<{ address: string; normies: RosterNormie[] } | null>(null);
+  const [active, setActive] = useState<CollectionSlug>("normies");
+  const [normiesData, setNormiesData] = useState<NormiesData | null>(null);
+  const [azukiData, setAzukiData] = useState<AzukiData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
 
   useEffect(() => {
     if (status !== "authenticated") {
-      setData(null);
+      setNormiesData(null);
+      setAzukiData(null);
       return;
     }
 
+    const endpoint = active === "normies" ? "/api/roster" : "/api/roster/azuki";
+    const alreadyLoaded = active === "normies" ? normiesData : azukiData;
+    if (alreadyLoaded) return;
+
     setLoading(true);
     setError(false);
-    fetch("/api/roster")
+    fetch(endpoint)
       .then(async (res) => {
-        if (!res.ok) {
-          setError(true);
-          return;
-        }
-        setData(await res.json());
+        if (!res.ok) { setError(true); return; }
+        const json = await res.json();
+        if (active === "normies") setNormiesData(json);
+        else setAzukiData(json);
       })
       .catch(() => setError(true))
       .finally(() => setLoading(false));
-  }, [status]);
+    // intentionally excluding normiesData/azukiData from deps — we only load once per collection
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status, active]);
 
   if (status === "loading" || status === "unauthenticated") {
     return (
@@ -58,7 +75,7 @@ export function RosterContent() {
         <div className="space-y-3">
           <h1 className="font-pixel-square text-3xl text-neutral-900">Your Roster</h1>
           <p className="text-base text-neutral-500">
-            Sign in to see the normies your wallet currently holds.
+            Sign in to see the tokens your wallet currently holds.
           </p>
         </div>
 
@@ -96,63 +113,79 @@ export function RosterContent() {
     );
   }
 
-  if (loading) {
-    return (
-      <div className="space-y-3">
-        <h1 className="font-pixel-square text-3xl text-neutral-900">Your Roster</h1>
-        <p className="text-sm text-neutral-400">loading your placements...</p>
-      </div>
-    );
-  }
+  const address = normiesData?.address ?? azukiData?.address ?? "";
 
-  if (error) {
-    return (
-      <div className="space-y-4">
-        <h1 className="font-pixel-square text-3xl text-neutral-900">Your Roster</h1>
-        <p className="text-sm text-neutral-500">couldn&apos;t load your roster. try again in a moment.</p>
-      </div>
-    );
-  }
-
-  if (!data || data.normies.length === 0) {
-    return (
-      <div className="max-w-lg space-y-6">
-        <div className="space-y-3">
-          <h1 className="font-pixel-square text-3xl text-neutral-900">Your Roster</h1>
-          {data && (
-            <p className="font-mono text-sm text-neutral-400">{shortAddr(data.address)}</p>
-          )}
-          <p className="text-base text-neutral-500">
-            No normies on this wallet yet.
-          </p>
-        </div>
-        <PillButtonLink href="/explore">Explore the Talented Normies</PillButtonLink>
-      </div>
-    );
-  }
+  const currentItems: RosterItem[] =
+    active === "normies"
+      ? (normiesData?.normies ?? []).map((n) => ({
+          tokenId: n.tokenId,
+          portrait: { kind: "pixels" as const, pixels: n.pixels },
+          jobTitle: n.jobTitle,
+          oneLiner: n.oneLiner,
+        }))
+      : (azukiData?.items ?? []);
 
   return (
     <div className="w-full space-y-8">
       <div className="space-y-2">
         <h1 className="font-pixel-square text-3xl text-neutral-900">Your Roster</h1>
-        <p className="font-mono text-sm text-neutral-400">{shortAddr(data.address)}</p>
-        <p className="text-base text-neutral-500">
-          {data.normies.length} placement{data.normies.length === 1 ? "" : "s"} on file.
-        </p>
+        {address && <p className="font-mono text-sm text-neutral-400">{shortAddr(address)}</p>}
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-start">
-        {data.normies.map((n) => (
-          <NormiePreviewCard
-            key={n.tokenId}
-            collection="normies"
-            tokenId={n.tokenId}
-            portrait={{ kind: "pixels", pixels: n.pixels }}
-            jobTitle={n.jobTitle}
-            oneLiner={n.oneLiner}
-          />
+      {/* collection tabs */}
+      <div className="flex gap-1 border-b border-neutral-200">
+        {COLLECTIONS.map(({ slug, label }) => (
+          <button
+            key={slug}
+            onClick={() => { setError(false); setActive(slug); }}
+            className={cn(
+              "px-4 py-2 text-sm font-medium tracking-tight transition-colors",
+              active === slug
+                ? "border-b-2 border-neutral-900 text-neutral-900 -mb-px"
+                : "text-neutral-400 hover:text-neutral-600",
+            )}
+          >
+            {label}
+          </button>
         ))}
       </div>
+
+      {loading && (
+        <p className="text-sm text-neutral-400">loading your placements...</p>
+      )}
+
+      {error && (
+        <p className="text-sm text-neutral-500">couldn&apos;t load your roster. try again in a moment.</p>
+      )}
+
+      {!loading && !error && currentItems.length === 0 && (
+        <div className="space-y-4">
+          <p className="text-base text-neutral-500">
+            No {active} on this wallet.
+          </p>
+          <PillButtonLink href="/explore">Explore the Talented {active === "normies" ? "Normies" : "Azukis"}</PillButtonLink>
+        </div>
+      )}
+
+      {!loading && !error && currentItems.length > 0 && (
+        <>
+          <p className="text-base text-neutral-500">
+            {currentItems.length} placement{currentItems.length === 1 ? "" : "s"} on file.
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-start">
+            {currentItems.map((item) => (
+              <NormiePreviewCard
+                key={item.tokenId}
+                collection={active}
+                tokenId={item.tokenId}
+                portrait={item.portrait}
+                jobTitle={item.jobTitle}
+                oneLiner={item.oneLiner}
+              />
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 }

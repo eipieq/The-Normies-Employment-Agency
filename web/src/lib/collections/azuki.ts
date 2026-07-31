@@ -5,6 +5,7 @@ import {
   publicClient,
   resolveTokenUri,
 } from "../evm";
+import { getDepartmentFromAzukiTraits } from "../cluster/azuki";
 import type { CollectionAdapter } from "./types";
 
 const AZUKI = getAddress("0xed5af388653567Af2f388e6224dc7c4b3241c544");
@@ -132,5 +133,42 @@ export const azukiAdapter: CollectionAdapter = {
       args: [BigInt(tokenId)],
     });
     return owner.toLowerCase() === address.toLowerCase();
+  },
+
+  async getDepartment(tokenId) {
+    try {
+      const meta = await loadMetadata(tokenId);
+      return getDepartmentFromAzukiTraits(meta.attributes ?? []);
+    } catch {
+      return null;
+    }
+  },
+
+  async getHoldings(address) {
+    const key = alchemyNftKey();
+    if (!key) return [];
+
+    const results: number[] = [];
+    let pageKey: string | undefined;
+
+    do {
+      const url = new URL(`https://eth-mainnet.g.alchemy.com/nft/v3/${key}/getNFTsForOwner`);
+      url.searchParams.set("owner", address);
+      url.searchParams.append("contractAddresses[]", AZUKI);
+      url.searchParams.set("withMetadata", "false");
+      url.searchParams.set("pageSize", "100");
+      if (pageKey) url.searchParams.set("pageKey", pageKey);
+
+      const res = await fetch(url, { signal: AbortSignal.timeout(10_000) });
+      if (!res.ok) break;
+
+      const data = (await res.json()) as { ownedNfts: { tokenId: string }[]; pageKey?: string };
+      for (const nft of data.ownedNfts) {
+        results.push(Number(nft.tokenId));
+      }
+      pageKey = data.pageKey;
+    } while (pageKey);
+
+    return results.sort((a, b) => a - b);
   },
 };
