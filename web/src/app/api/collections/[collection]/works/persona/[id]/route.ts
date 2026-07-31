@@ -4,6 +4,7 @@ import { sessionOptions, type SessionData } from "@/lib/session";
 import { getCollection, parseTokenId, NormiesApiError } from "@/lib/collections";
 import { isOwner } from "@/lib/ownership";
 import { getPersona } from "@/lib/persona";
+import { isSubscribed } from "@/lib/subscription";
 
 type Params = { params: Promise<{ collection: string; id: string }> };
 
@@ -16,8 +17,12 @@ export async function GET(_req: Request, { params }: Params) {
   const session = await getIronSession<SessionData>(await cookies(), sessionOptions);
   if (!session.address) return new Response("unauthenticated", { status: 401 });
 
-  const owns = await isOwner(adapter.meta.slug, tokenId, session.address).catch(() => false);
+  const [owns, subscribed] = await Promise.all([
+    isOwner(adapter.meta.slug, tokenId, session.address).catch(() => false),
+    isSubscribed(session.address),
+  ]);
   if (!owns) return new Response("not owner", { status: 403 });
+  if (!subscribed) return new Response("subscription required", { status: 402 });
 
   let dossier;
   try {

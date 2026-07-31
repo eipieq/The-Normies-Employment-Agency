@@ -8,6 +8,7 @@ import { getPersona } from "@/lib/persona";
 import { checkChatRateLimit } from "@/lib/chat-rate-limit";
 import { appendHistory } from "@/lib/chat-history";
 import { veniceModel } from "@/lib/venice";
+import { isSubscribed } from "@/lib/subscription";
 
 type Params = { params: Promise<{ collection: string; id: string }> };
 
@@ -20,8 +21,12 @@ export async function POST(req: Request, { params }: Params) {
   const session = await getIronSession<SessionData>(await cookies(), sessionOptions);
   if (!session.address) return new Response("unauthenticated", { status: 401 });
 
-  const owns = await isOwner(adapter.meta.slug, tokenId, session.address).catch(() => false);
+  const [owns, subscribed] = await Promise.all([
+    isOwner(adapter.meta.slug, tokenId, session.address).catch(() => false),
+    isSubscribed(session.address),
+  ]);
   if (!owns) return new Response("not owner", { status: 403 });
+  if (!subscribed) return new Response("subscription required", { status: 402 });
 
   const { ok, remaining } = await checkChatRateLimit(
     session.address,
