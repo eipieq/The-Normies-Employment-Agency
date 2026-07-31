@@ -145,9 +145,17 @@ export const config = { matcher: ["/api/:path*"] };
 ```
 Note: this is a shallow check (cookie presence only). Full session decode + ownership still happens in each route handler. The middleware just catches missing-cookie requests at the edge before they hit application code.
 
-### 12. Error monitoring
+### 12. Error monitoring ✅
 **Problem:** No visibility into Venice failures, Redis timeouts, or RPC errors in production. They surface as 500s with no context.
-**Fix:** Add Sentry. Install `@sentry/nextjs`, run `npx @sentry/wizard@latest -i nextjs`. Alternatively, Vercel's built-in log drain (Vercel dashboard → Logs) gives basic visibility without a dependency.
+**Fix:** Structured `console.error` logging with `[agency:error]` prefix added to all key failure surfaces:
+- `persona/generator.ts` — Venice call failure, JSON parse failure
+- `decisions.ts` — Venice call, Redis store/attest/load failures
+- `chat-history.ts` — Redis load and append failures
+- `persona/cache.ts` — Redis get/set failures
+- `subscription.ts` — Redis get/activate failures
+- `chat-rate-limit.ts` — Redis failure (fails open)
+
+All logs include structured context: `{ collection, tokenId, address, error }` as applicable. Vercel's log drain (Vercel dashboard → Logs) will capture these in production without any extra dependency.
 
 ---
 

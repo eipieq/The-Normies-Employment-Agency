@@ -36,7 +36,12 @@ export async function cacheGet(
   version: string,
 ): Promise<Persona | null> {
   if (useRedis()) {
-    return (await redis().get<Persona>(cacheKey(collection, tokenId, version))) ?? null;
+    try {
+      return (await redis().get<Persona>(cacheKey(collection, tokenId, version))) ?? null;
+    } catch (err) {
+      console.error("[agency:error] persona:cache_get redis_error", { collection, tokenId, error: String(err) });
+      return null;
+    }
   }
 
   const p = fsPath(collection, tokenId, version);
@@ -55,7 +60,11 @@ export async function cacheSet(
   persona: Persona,
 ): Promise<void> {
   if (useRedis()) {
-    await redis().set(cacheKey(collection, tokenId, version), persona);
+    try {
+      await redis().set(cacheKey(collection, tokenId, version), persona);
+    } catch (err) {
+      console.error("[agency:error] persona:cache_set redis_error", { collection, tokenId, error: String(err) });
+    }
     return;
   }
 

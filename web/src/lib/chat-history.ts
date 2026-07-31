@@ -33,7 +33,8 @@ export async function loadHistory(
   if (!r) return [];
   try {
     return await r.lrange<StoredMessage>(historyKey(collection, tokenId, address), 0, -1);
-  } catch {
+  } catch (err) {
+    console.error("[agency:error] history:load redis_error", { collection, tokenId, error: String(err) });
     return [];
   }
 }
@@ -48,15 +49,19 @@ export async function appendHistory(
   const r = redis();
   if (!r) return;
 
-  const ts = Date.now();
-  const pipe = r.pipeline();
-  pipe.rpush(
-    historyKey(collection, tokenId, address),
-    { role: "user", content: userContent, ts },
-    { role: "assistant", content: assistantContent, ts: ts + 1 },
-  );
-  pipe.ltrim(historyKey(collection, tokenId, address), -MAX_MESSAGES, -1);
-  pipe.hincrby(perfKey(collection, tokenId), "messages", 1);
-  pipe.hset(perfKey(collection, tokenId), { lastActive: new Date().toISOString() });
-  await pipe.exec();
+  try {
+    const ts = Date.now();
+    const pipe = r.pipeline();
+    pipe.rpush(
+      historyKey(collection, tokenId, address),
+      { role: "user", content: userContent, ts },
+      { role: "assistant", content: assistantContent, ts: ts + 1 },
+    );
+    pipe.ltrim(historyKey(collection, tokenId, address), -MAX_MESSAGES, -1);
+    pipe.hincrby(perfKey(collection, tokenId), "messages", 1);
+    pipe.hset(perfKey(collection, tokenId), { lastActive: new Date().toISOString() });
+    await pipe.exec();
+  } catch (err) {
+    console.error("[agency:error] history:append redis_error", { collection, tokenId, error: String(err) });
+  }
 }

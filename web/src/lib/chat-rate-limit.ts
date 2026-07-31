@@ -22,9 +22,13 @@ export async function checkChatRateLimit(
   if (!useRedis()) return { ok: true, remaining: LIMIT };
 
   const key = `agency:chat:${address.toLowerCase()}:${scope}`;
-  const redis = new Redis({ url: redisUrl()!, token: redisToken()! });
-  const count = await redis.incr(key);
-  if (count === 1) await redis.expire(key, WINDOW_SEC);
-
-  return { ok: count <= LIMIT, remaining: Math.max(0, LIMIT - count) };
+  try {
+    const redis = new Redis({ url: redisUrl()!, token: redisToken()! });
+    const count = await redis.incr(key);
+    if (count === 1) await redis.expire(key, WINDOW_SEC);
+    return { ok: count <= LIMIT, remaining: Math.max(0, LIMIT - count) };
+  } catch (err) {
+    console.error("[agency:error] rate_limit redis_error", { address, scope, error: String(err) });
+    return { ok: true, remaining: LIMIT };
+  }
 }

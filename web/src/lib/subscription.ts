@@ -21,7 +21,12 @@ function subKey(address: string) {
 export async function getSubscription(address: string): Promise<SubRecord | null> {
   const r = redis();
   if (!r) return null;
-  return r.get<SubRecord>(subKey(address));
+  try {
+    return await r.get<SubRecord>(subKey(address));
+  } catch (err) {
+    console.error("[agency:error] subscription:get redis_error", { address, error: String(err) });
+    return null;
+  }
 }
 
 export async function isSubscribed(address: string): Promise<boolean> {
@@ -37,7 +42,12 @@ export async function activateSubscription(
 ): Promise<void> {
   const r = redis();
   if (!r) return;
-  const renewsAt = Date.now() + 30 * 24 * 60 * 60 * 1000;
-  const record: SubRecord = { status: "active", planId, activatedAt: Date.now(), renewsAt };
-  await r.set(subKey(address), record, { ex: 35 * 24 * 60 * 60 });
+  try {
+    const renewsAt = Date.now() + 30 * 24 * 60 * 60 * 1000;
+    const record: SubRecord = { status: "active", planId, activatedAt: Date.now(), renewsAt };
+    await r.set(subKey(address), record, { ex: 35 * 24 * 60 * 60 });
+  } catch (err) {
+    console.error("[agency:error] subscription:activate redis_error", { address, planId, error: String(err) });
+    throw err;
+  }
 }

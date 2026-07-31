@@ -27,14 +27,31 @@ respond with ONLY a valid JSON object matching this exact shape:
 no markdown, no code fences, no prose. just the JSON object.`;
 
 export async function generatePersona(dossier: Dossier): Promise<Persona> {
-  const { text } = await generateText({
-    model: veniceModel(),
-    system: agencyBrief(dossier.collection),
-    prompt: `${dossier.prompt}${JSON_INSTRUCTIONS}`,
-    temperature: 0,
-  });
+  let text: string;
+  try {
+    ({ text } = await generateText({
+      model: veniceModel(),
+      system: agencyBrief(dossier.collection),
+      prompt: `${dossier.prompt}${JSON_INSTRUCTIONS}`,
+      temperature: 0,
+    }));
+  } catch (err) {
+    console.error("[agency:error] persona:generate venice_error", {
+      collection: dossier.collection,
+      error: String(err),
+    });
+    throw err;
+  }
 
-  const cleaned = text.replace(/^```(?:json)?\s*/i, "").replace(/\s*```\s*$/, "").trim();
-  const parsed = JSON.parse(cleaned);
-  return personaSchema.parse(parsed);
+  try {
+    const cleaned = text.replace(/^```(?:json)?\s*/i, "").replace(/\s*```\s*$/, "").trim();
+    return personaSchema.parse(JSON.parse(cleaned));
+  } catch (err) {
+    console.error("[agency:error] persona:generate parse_error", {
+      collection: dossier.collection,
+      preview: text.slice(0, 300),
+      error: String(err),
+    });
+    throw err;
+  }
 }
