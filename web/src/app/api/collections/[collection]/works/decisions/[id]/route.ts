@@ -75,7 +75,8 @@ export async function PATCH(req: Request, { params }: Params) {
   const { hash, uid } = (await req.json()) as { hash: string; uid: string };
   if (!hash || !uid) return new Response("missing hash or uid", { status: 400 });
 
-  await updateAttestationUid(hash, uid);
+  const updated = await updateAttestationUid(hash, uid, adapter.meta.slug, tokenId);
+  if (!updated) return new Response("not found or unauthorized", { status: 404 });
   return new Response(null, { status: 204 });
 }
 

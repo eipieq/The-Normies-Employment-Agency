@@ -76,15 +76,24 @@ export async function storeDecision(decision: StoredDecision): Promise<void> {
   }
 }
 
-export async function updateAttestationUid(hash: string, uid: string): Promise<void> {
+export async function updateAttestationUid(
+  hash: string,
+  uid: string,
+  expectedCollection: CollectionSlug,
+  expectedTokenId: number,
+): Promise<boolean> {
   const r = redis();
-  if (!r) return;
+  if (!r) return false;
   try {
     const existing = await r.get<StoredDecision>(preimageKey(hash));
-    if (!existing) return;
+    if (!existing) return false;
+    // Verify the hash belongs to the requesting token — prevents cross-token IDOR
+    if (existing.collection !== expectedCollection || existing.tokenId !== expectedTokenId) return false;
     await r.set(preimageKey(hash), { ...existing, attestationUid: uid });
+    return true;
   } catch (err) {
     console.error("[agency:error] decision:attest redis_error", { hash, uid, error: String(err) });
+    return false;
   }
 }
 
