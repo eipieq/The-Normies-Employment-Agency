@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "azuki-321": {
+      "command": "npx",
+      "args": ["tsx", "/Users/anil/Documents/hackathon/the-employment-agency/mcp/server.ts"],
+      "env": {
+        "COLLECTION": "azuki",
+        "TOKEN_ID": "321",
+        "VENICE_API_KEY": "VENICE_INFERENCE_KEY_rlyo0L5LdkKgY2pmcYbmbK2cP24qVfRkupqZBmKzkU",
+        "AGENCY_URL": "http://localhost:3000"
+      }
+    }
+  }
+}

@@ -1,0 +1,5 @@
+When using the employment-agency MCP tool (ask_character):
+- Present the character's response verbatim, exactly as returned by the tool
+- Do not paraphrase, summarize, or rewrite it in your own voice
+- Do not add commentary before or after unless the user asks for it
+- The character has a distinct personality — preserve it exactly

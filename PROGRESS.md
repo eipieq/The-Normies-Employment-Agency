@@ -6,6 +6,42 @@ format: date, agent, what shipped, what's next, blockers.
 
 ---
 
+## 2026-08-01 (cursor) — /chats page: all conversations in one place
+
+shipped:
+
+- new redis sorted set `agency:chats:{address}` (member `${collection}:${tokenId}`, score = last message timestamp), written alongside the existing history/perf writes in `appendHistory` (`lib/chat-history.ts`). `listChatThreads(address)` reads it back via `zrange ... rev withScores`.
+- `GET /api/chats` — session-gated, loads all chat threads for the wallet, resolves dossier + persona (job title, portrait) + last message preview per thread via `Promise.allSettled` (same pattern as `/api/roster`).
+- `/chats` page + `ChatsContent` component — connect-gate matching `RosterContent`'s look, list of every conversation (portrait, job title, collection label + token id, last message snippet, relative time), links straight into `/collections/{collection}/works/{id}/chat`. empty state points at `/roster`.
+- header nav: "Chats" link next to "Roster", authenticated-only.
+
+next: none queued. worth revisiting later: paginate `/api/chats` if a wallet accumulates a lot of threads (currently loads everything, uncapped).
+
+blockers: none.
+
+follow-up same day: user reported chats missing from `/chats` and guessed it was the dev-owner bypass. checked the actual redis instance directly — not the bypass. the `agency:chats:{address}` index only gets written going forward (inside `appendHistory`), so all history that predates this feature was invisible to `/api/chats`. added `scripts/backfill-chat-index.ts` (`pnpm backfill-chat-index`) that scans `agency:history:*` and zadds each into its owner's index using the last message's timestamp as score. ran it once against the shared upstash instance — backfilled 5 pre-existing threads for the dev wallet. one-time fix; not needed again unless the index key scheme changes.
+
+follow-up: fixed the silent-redirect UX gap this surfaced. `/collections/[collection]/works/[id]/chat/page.tsx` previously hard-redirected to the public card the instant `isOwner` was false, with zero explanation, and never checked subscription at page load at all (only the POST route did, as a bare 402). now it checks both `isOwner` and `isSubscribed` up front alongside `loadHistory`: cold links with no history and no access still redirect (no point showing an empty gated chat to a rando), but a thread with real history and lost access/subscription now renders read-only with a quiet neutral-50 banner ("you no longer own this X" / "your holder pass has expired") plus a cta back to the card, matching `GatedPanel`'s existing not-owner/subscribe visual language. `ChatSurface` takes a new `disabled?: { message, ctaHref, ctaLabel }` prop that locks the input and swaps its placeholder instead of hiding the conversation.
+
+next: none queued. remaining ideas from this session not yet picked up: delete/archive control on `/chats`, pagination on `/api/chats`, and the planned MCP Cursor integration (scoped in `CHANGELOG.md`).
+
+---
+
+## 2026-08-01 (cursor) — chat layout fix (root cause: rainbowkit wrapper div)
+
+shipped:
+
+- found the real cause of the chat page stretching and the header/job-title bar scrolling away: `RainbowKitProvider` wraps the whole app in an unstyled `<div data-rk>` between `<body>` and `<Header>/<main>/<Footer>`. that div isn't a flex container, so `body`'s `flex flex-col h-full` never reached `<main>` — the `flex-1 min-h-0 overflow-hidden` chain on the chat page (already written in a prior uncommitted pass) was inert, `<main>` just grew to content height, and the whole document scrolled instead of just the message list.
+- fix: `[data-rk] { display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; }` in `globals.css`. restores the intended flex chain sitewide (also fixes footer-pinning via `mt-auto` on short pages, which was silently broken the same way).
+- markdown in chat: `react-markdown` + component overrides in `chat-surface.tsx` were already correct (verified `**bold**` → `<strong>` via a local render test) — they just looked broken because of the layout bug above. no changes needed there.
+- verified via `tsc --noEmit` (clean) and inspecting rendered DOM from the running dev server to confirm `<header>`/`<main>`/`<footer>` all sat inside the unstyled `data-rk` div.
+
+next: user should confirm visually in-browser (dev server already running on :3000). no other work queued.
+
+blockers: none.
+
+---
+
 ## 2026-05-21 (cursor) — vercel analytics prod deploy
 
 shipped:

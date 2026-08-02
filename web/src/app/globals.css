@@ -124,4 +124,14 @@
     @apply bg-background text-foreground text-base antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
+
+  /* rainbowkit wraps the whole app in an unstyled div (data-rk). without this
+     it breaks the body's flex column, so h-full/flex-1/min-h-0 chains (used to
+     keep the header pinned and scope scrolling to the chat pane) do nothing. */
+  [data-rk] {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+  }
 }

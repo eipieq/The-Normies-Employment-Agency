@@ -1,0 +1,19 @@
+{
+  "name": "employment-agency-mcp",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "start": "tsx server.ts",
+    "ask": "VENICE_API_KEY=VENICE_INFERENCE_KEY_rlyo0L5LdkKgY2pmcYbmbK2cP24qVfRkupqZBmKzkU AGENCY_URL=http://localhost:3000 tsx cli.ts"
+  },
+  "dependencies": {
+    "@ai-sdk/openai-compatible": "^0.2.14",
+    "@modelcontextprotocol/sdk": "^1.15.0",
+    "ai": "^4.3.16",
+    "zod": "^3.24.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3"
+  }
+}

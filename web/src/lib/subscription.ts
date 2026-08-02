@@ -30,6 +30,13 @@ export async function getSubscription(address: string): Promise<SubRecord | null
 }
 
 export async function isSubscribed(address: string): Promise<boolean> {
+  if (
+    process.env.NODE_ENV === "development" &&
+    process.env.DEV_OWNER_ADDRESS &&
+    address.toLowerCase() === process.env.DEV_OWNER_ADDRESS.toLowerCase()
+  ) {
+    return true;
+  }
   const sub = await getSubscription(address);
   return sub?.status === "active";
 }

@@ -57,9 +57,15 @@ export async function POST(req: Request, { params }: Params) {
   const lastUserContent = lastUser?.parts.filter(isTextUIPart).map((p) => p.text).join("") ?? "";
   const address = session.address!;
 
+  // Append examples to system prompt as labeled voice samples (not fake history)
+  const examplesBlock = (persona.examples ?? []).length > 0
+    ? `\n\n---\nVOICE EXAMPLES — these are samples of how you speak, not prior conversations:\n` +
+      (persona.examples ?? []).map((ex, i) => `[${i + 1}] User: ${ex.user}\n    You: ${ex.assistant}`).join("\n")
+    : "";
+
   const result = streamText({
     model: veniceModel(),
-    system: persona.systemPrompt,
+    system: persona.systemPrompt + examplesBlock,
     messages: await convertToModelMessages(messages),
     maxOutputTokens: 1024,
     async onFinish({ text }) {

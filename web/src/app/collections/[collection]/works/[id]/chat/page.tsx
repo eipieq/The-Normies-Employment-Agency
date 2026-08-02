@@ -5,6 +5,7 @@ import { cookies } from "next/headers";
 import { sessionOptions, type SessionData } from "@/lib/session";
 import { getCollection, parseTokenId, NormiesApiError } from "@/lib/collections";
 import { isOwner } from "@/lib/ownership";
+import { isSubscribed } from "@/lib/subscription";
 import { getPersona } from "@/lib/persona";
 import { loadHistory } from "@/lib/chat-history";
 import { ChatSurface } from "@/components/chat-surface";
@@ -39,8 +40,15 @@ export default async function CollectionChatPage({ params }: Props) {
   const worksUrl = `/collections/${slug}/works/${tokenId}`;
   if (!session.address) redirect(worksUrl);
 
-  const owns = await isOwner(adapter.meta.slug, tokenId, session.address).catch(() => false);
-  if (!owns) redirect(worksUrl);
+  const [owns, subscribed, history] = await Promise.all([
+    isOwner(adapter.meta.slug, tokenId, session.address).catch(() => false),
+    isSubscribed(session.address).catch(() => false),
+    loadHistory(adapter.meta.slug, tokenId, session.address),
+  ]);
+
+  // no history and no access at all: this isn't a past conversation, just a
+  // cold link. send them to the public card instead of an empty chat shell.
+  if (!owns && history.length === 0) redirect(worksUrl);
 
   let dossier;
   try {
@@ -50,13 +58,24 @@ export default async function CollectionChatPage({ params }: Props) {
     throw e;
   }
 
-  const [persona, history] = await Promise.all([
-    getPersona(adapter.meta.slug, tokenId, dossier),
-    loadHistory(adapter.meta.slug, tokenId, session.address),
-  ]);
+  const persona = await getPersona(adapter.meta.slug, tokenId, dossier);
+
+  const disabled = !owns
+    ? {
+        message: `you no longer own this ${adapter.meta.label}. you can still read the conversation.`,
+        ctaHref: worksUrl,
+        ctaLabel: "view card",
+      }
+    : !subscribed
+      ? {
+          message: "your holder pass has expired. resubscribe to keep chatting.",
+          ctaHref: worksUrl,
+          ctaLabel: "renew pass",
+        }
+      : null;
 
   return (
-    <main className="flex flex-1 flex-col pt-6 pb-12">
+    <main className="flex flex-1 flex-col overflow-hidden min-h-0">
       <ChatSurface
         collection={adapter.meta.slug}
         label={adapter.meta.label}
@@ -64,6 +83,7 @@ export default async function CollectionChatPage({ params }: Props) {
         jobTitle={persona.jobTitle}
         portrait={dossier.portrait}
         initialHistory={history}
+        disabled={disabled}
       />
     </main>
   );

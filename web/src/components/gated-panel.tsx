@@ -242,7 +242,7 @@ export function GatedPanel({
               {copied ? "copied" : "copy"}
             </button>
           </div>
-          <p className="text-sm text-neutral-500 leading-relaxed whitespace-pre-wrap bg-neutral-50 rounded-lg p-2.5 border border-neutral-100 max-h-40 overflow-y-auto">
+          <p className="text-sm text-neutral-500 leading-relaxed whitespace-pre-wrap bg-neutral-50 rounded-lg p-2.5 border border-neutral-100 max-h-40 sm:max-h-64 overflow-y-auto">
             {data.systemPrompt}
           </p>
         </div>

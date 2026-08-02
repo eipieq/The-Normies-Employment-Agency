@@ -42,7 +42,7 @@ export default async function CollectionWorksPage({ params }: Props) {
   const department = await adapter.getDepartment?.(tokenId).catch(() => null) ?? null;
 
   return (
-    <main className="flex flex-1 flex-col items-center justify-start pt-12 pb-24 px-4">
+    <main className="flex flex-1 flex-col items-center justify-start pt-12 pb-24 px-4 sm:px-6">
       <EmploymentCard
         collection={adapter.meta}
         tokenId={tokenId}

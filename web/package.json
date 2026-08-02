@@ -9,7 +9,8 @@
     "typecheck": "tsc --noEmit",
     "smoke": "dotenv -e .env.local -- tsx scripts/smoke.ts",
     "persona-smoke": "dotenv -e .env.local -- tsx scripts/persona-smoke.ts",
-    "cluster-normies": "dotenv -e .env.local -- tsx scripts/cluster-normies.ts"
+    "cluster-normies": "dotenv -e .env.local -- tsx scripts/cluster-normies.ts",
+    "backfill-chat-index": "dotenv -e .env.local -- tsx scripts/backfill-chat-index.ts"
   },
   "dependencies": {
     "@ai-sdk/openai-compatible": "^2.0.47",
@@ -34,6 +35,7 @@
     "radix-ui": "^1.4.3",
     "react": "19.2.4",
     "react-dom": "19.2.4",
+    "react-markdown": "^10.1.0",
     "sharp": "^0.34.5",
     "tailwind-merge": "^3.6.0",
     "tw-animate-css": "^1.4.0",

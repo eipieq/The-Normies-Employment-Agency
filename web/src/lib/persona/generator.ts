@@ -12,6 +12,7 @@ const personaSchema = z.object({
   strengths: z.array(z.string()).min(2).max(4),
   blindSpots: z.array(z.string()).min(2).max(4),
   systemPrompt: z.string(),
+  examples: z.array(z.object({ user: z.string(), assistant: z.string() })).min(2).max(4),
 });
 
 const JSON_INSTRUCTIONS = `
@@ -22,8 +23,12 @@ respond with ONLY a valid JSON object matching this exact shape:
   "workStyle": string,
   "strengths": string[],
   "blindSpots": string[],
-  "systemPrompt": string
+  "systemPrompt": string,
+  "examples": [{ "user": string, "assistant": string }]
 }
+
+the "examples" field: 3 short conversation exchanges that demonstrate exactly how this character speaks.
+each exchange should feel like a real moment — specific, in voice, no filler. the assistant turn should be 1-4 sentences max.
 no markdown, no code fences, no prose. just the JSON object.`;
 
 export async function generatePersona(dossier: Dossier): Promise<Persona> {

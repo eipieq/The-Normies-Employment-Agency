@@ -24,6 +24,29 @@ function perfKey(collection: CollectionSlug, tokenId: number) {
   return `agency:perf:${collection}:${tokenId}`;
 }
 
+function chatIndexKey(address: string) {
+  return `agency:chats:${address.toLowerCase()}`;
+}
+
+export type ChatThreadRef = { collection: CollectionSlug; tokenId: number; lastActive: number };
+
+export async function listChatThreads(address: string): Promise<ChatThreadRef[]> {
+  const r = redis();
+  if (!r) return [];
+  try {
+    const raw = await r.zrange<string[]>(chatIndexKey(address), 0, -1, { rev: true, withScores: true });
+    const threads: ChatThreadRef[] = [];
+    for (let i = 0; i < raw.length; i += 2) {
+      const [collection, tokenId] = raw[i].split(":");
+      threads.push({ collection: collection as CollectionSlug, tokenId: Number(tokenId), lastActive: Number(raw[i + 1]) });
+    }
+    return threads;
+  } catch (err) {
+    console.error("[agency:error] chats:list redis_error", { address, error: String(err) });
+    return [];
+  }
+}
+
 export async function loadHistory(
   collection: CollectionSlug,
   tokenId: number,
@@ -60,6 +83,7 @@ export async function appendHistory(
     pipe.ltrim(historyKey(collection, tokenId, address), -MAX_MESSAGES, -1);
     pipe.hincrby(perfKey(collection, tokenId), "messages", 1);
     pipe.hset(perfKey(collection, tokenId), { lastActive: new Date().toISOString() });
+    pipe.zadd(chatIndexKey(address), { score: ts, member: `${collection}:${tokenId}` });
     await pipe.exec();
   } catch (err) {
     console.error("[agency:error] history:append redis_error", { collection, tokenId, error: String(err) });

@@ -18,7 +18,7 @@ export async function POST(req: Request) {
 
   // domain must match request origin
   const origin = req.headers.get("origin");
-  const expectedDomain = origin ? new URL(origin).hostname : null;
+  const expectedDomain = origin ? new URL(origin).host : null;
   if (!expectedDomain || parsed.domain !== expectedDomain) {
     return new Response("domain mismatch", { status: 422 });
   }

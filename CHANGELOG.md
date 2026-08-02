@@ -5,9 +5,73 @@ Entries are ordered newest-first within each version.
 
 ---
 
+## [Roadmap] — Character-as-Coworker (IDE Integration)
+
+> **Status: in development / beta use only.** Core pieces are built and working locally. Not production-ready — kept off the main product surface until the experience is solid.
+
+### What's built
+- MCP server (`mcp/server.ts`) — exposes `ask_character` tool to any MCP-compatible IDE; fetches persona on first use, caches per session
+- CLI (`mcp/cli.ts`) — terminal REPL with pipe support (`cat file.ts | npm run ask azuki 321 "review this"`, `git diff | ...`)
+- Dev persona export endpoint (`/api/dev/persona`) — dev-only, returns full persona + examples for any token
+- Cursor global config (`~/.cursor/mcp.json`) wired to the MCP server
+
+### Known limitations / why it's beta
+- MCP tool output gets rewritten by Cursor AI — character voice doesn't come through cleanly
+- CLI pipe mode works but is manual — no file watching, no git hook integration
+- Dev server must be running locally for persona fetch (not standalone yet)
+- Voice consistency depends on persona quality, which varies by token
+
+### What's next (before shipping)
+- [ ] Standalone persona mode — bundle persona into the MCP server at startup, no dev server dependency
+- [ ] Git hook integration — character reacts to commits/PRs automatically
+- [ ] Cursor rules to preserve character voice verbatim
+- [ ] Multi-token switching in one session
+
+---
+
+## [Planned] — MCP Cursor Integration
+
+Connect a specific NFT character to Cursor as an MCP tool, so the derived personality becomes an active coworker inside the IDE.
+
+### Phase 1 — Dev persona export ✓
+- [x] Add `GET /api/dev/persona?collection=&id=` route (dev-only, no auth)
+- [x] Returns full persona: `systemPrompt`, `examples`, `jobTitle`, `oneLiner`
+- [x] Guards with `NODE_ENV === 'development'` check, 404 in prod
+
+### Phase 2 — MCP server ✓
+- [x] Create `mcp/` directory with `server.ts` and `package.json`
+- [x] Install `@modelcontextprotocol/sdk`, `@ai-sdk/openai-compatible`, `tsx`
+- [x] On startup: fetch persona from `AGENCY_URL/api/dev/persona`
+- [x] Build system prompt from `persona.systemPrompt` + examples block
+- [x] Expose one tool: `ask_{collection}_{tokenId}` — takes `message: string`, returns character response
+- [x] Maintain in-memory conversation history across tool calls
+- [x] Call Venice directly (no Next.js proxy needed)
+
+### Phase 3 — Cursor wiring ✓
+- [x] Add `.cursor/mcp.json` to repo with server config
+- [x] Env vars: `COLLECTION`, `TOKEN_ID`, `VENICE_API_KEY`, `AGENCY_URL`
+- [ ] Document setup in README: start dev server → open Cursor → `@azuki-321`
+
+---
+
 ## [Unreleased] — `experiment/collections` branch
 
-### 2026-08-01
+### 2026-08-01 (session 2)
+
+#### Deployment
+- **fix: normies prod 404** — `rootDirectory` was unset (`None`) on Vercel project; set to `web` + `framework: nextjs`, redeployed
+- **feat: deploy experiment/collections to normies prod** — switched production branch from `main` to `experiment/collections`; added missing env vars (`EAS_SCHEMA_UID`, `ALCHEMY_API_URL`, `NEXT_PUBLIC_URL`)
+
+#### Dev experience
+- **feat: dev ownership + subscription bypass** — `DEV_OWNER_ADDRESS` in `.env.local` bypasses both `isOwner` and `isSubscribed` when `NODE_ENV=development`; zero prod risk
+- **fix: SIWE verify domain mismatch** — `new URL(origin).hostname` strips port; changed to `.host` so `localhost:3000` matches correctly
+
+#### Chat
+- **feat: markdown rendering in chat** — assistant messages rendered via `react-markdown` with styled `p`, `strong`, `em`, `ul`, `ol`, `code` components
+- **fix: chat layout** — header and employee bar now stay pinned; only the message list scrolls; root cause was missing `min-h-0` on flex children (default `min-height: auto` prevented scroll context from forming); replaced `scrollIntoView` with direct `scrollTop` on the container ref
+- **feat: few-shot voice examples** — persona generator now produces 3 example exchanges (`examples[]`) alongside the system prompt; injected into system prompt as labeled voice samples (not fake history) so the model learns character voice without assuming prior relationship
+
+#### 2026-08-01 (session 1)
 
 #### Security
 - **fix(security): IDOR in attestation UID update** (`fafcf3b`)

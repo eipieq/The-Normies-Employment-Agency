@@ -45,7 +45,7 @@ export default function RootLayout({
       lang="en"
       className={`${plusJakartaSans.variable} ${geistMono.variable} ${geistPixelSquare.variable} ${instrumentSans.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-white text-foreground">
+      <body className="h-full flex flex-col bg-white text-foreground">
         <Providers>
           <Header />
           {children}
