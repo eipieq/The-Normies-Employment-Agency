@@ -1,29 +1,46 @@
 import { listCollections } from "@/lib/collections";
 import { loadWorks } from "@/lib/load-works";
 import { HOMEPAGE_EXAMPLES } from "@/lib/featured-collections";
+import { listCachedTokens } from "@/lib/persona/cache";
 import { CardsMarquee } from "@/components/cards-marquee";
 import { PillButtonLink } from "@/components/pill-button";
+import type { CollectionSlug } from "@/lib/collections/types";
 
 export const revalidate = 3600;
 
-const DEV_EXAMPLES = { normies: [6303], azuki: [1] } as const;
-const SKIP_DEV_EXAMPLES = true;
+const MARQUEE_COUNT = 8;
 
-async function loadExample(collection: keyof typeof HOMEPAGE_EXAMPLES, id: number) {
+function shuffle<T>(arr: T[]): T[] {
+  const out = [...arr];
+  for (let i = out.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [out[i], out[j]] = [out[j], out[i]];
+  }
+  return out;
+}
+
+async function loadExample(collection: CollectionSlug, id: number) {
   const { dossier, persona } = await loadWorks(collection, id);
   return { collection, id, portrait: dossier.portrait, persona };
 }
 
 export default async function Home() {
-  const loads =
-    process.env.NODE_ENV === "development" && SKIP_DEV_EXAMPLES
-      ? []
-      : Object.entries(
-          process.env.NODE_ENV === "development" ? DEV_EXAMPLES : HOMEPAGE_EXAMPLES,
-        ).flatMap(([collection, ids]) =>
-          ids.map((id: number) => loadExample(collection as keyof typeof HOMEPAGE_EXAMPLES, id)),
-        );
-  const results = await Promise.allSettled(loads);
+  let tokenEntries: { collection: CollectionSlug; tokenId: number }[] = [];
+
+  if (process.env.NODE_ENV !== "development") {
+    const cached = await listCachedTokens();
+    if (cached.length > 0) {
+      tokenEntries = shuffle(cached).slice(0, MARQUEE_COUNT);
+    } else {
+      tokenEntries = Object.entries(HOMEPAGE_EXAMPLES).flatMap(([collection, ids]) =>
+        (ids as number[]).map((id) => ({ collection: collection as CollectionSlug, tokenId: id })),
+      );
+    }
+  }
+
+  const results = await Promise.allSettled(
+    tokenEntries.map(({ collection, tokenId }) => loadExample(collection, tokenId)),
+  );
   const examples = results.flatMap((r) => (r.status === "fulfilled" ? [r.value] : []));
 
   const collections = listCollections();

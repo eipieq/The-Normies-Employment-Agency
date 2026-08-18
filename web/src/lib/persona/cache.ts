@@ -53,6 +53,58 @@ export async function cacheGet(
   }
 }
 
+const VALID_SLUGS = new Set<string>(["normies", "azuki"]);
+
+export async function listCachedTokens(): Promise<
+  { collection: CollectionSlug; tokenId: number }[]
+> {
+  if (useRedis()) {
+    try {
+      const keys = await redis().keys("agency:persona:*");
+      const seen = new Set<string>();
+      const result: { collection: CollectionSlug; tokenId: number }[] = [];
+      for (const key of keys) {
+        // agency:persona:{collection}:{tokenId}:{version}
+        const parts = key.split(":");
+        if (parts.length < 5) continue;
+        const collection = parts[2];
+        const tokenId = parseInt(parts[3], 10);
+        if (!VALID_SLUGS.has(collection) || isNaN(tokenId)) continue;
+        const k = `${collection}:${tokenId}`;
+        if (seen.has(k)) continue;
+        seen.add(k);
+        result.push({ collection: collection as CollectionSlug, tokenId });
+      }
+      return result;
+    } catch (err) {
+      console.error("[agency:error] persona:list_cached_tokens redis_error", { error: String(err) });
+      return [];
+    }
+  }
+
+  try {
+    if (!fs.existsSync(CACHE_DIR)) return [];
+    const files = fs.readdirSync(CACHE_DIR);
+    const seen = new Set<string>();
+    const result: { collection: CollectionSlug; tokenId: number }[] = [];
+    for (const file of files) {
+      if (!file.endsWith(".json")) continue;
+      // {collection}-{tokenId}-{version}.json
+      const m = file.match(/^(normies|azuki)-(\d+)-/);
+      if (!m) continue;
+      const collection = m[1] as CollectionSlug;
+      const tokenId = parseInt(m[2], 10);
+      const k = `${collection}:${tokenId}`;
+      if (seen.has(k)) continue;
+      seen.add(k);
+      result.push({ collection, tokenId });
+    }
+    return result;
+  } catch {
+    return [];
+  }
+}
+
 export async function cacheSet(
   collection: CollectionSlug,
   tokenId: number,
