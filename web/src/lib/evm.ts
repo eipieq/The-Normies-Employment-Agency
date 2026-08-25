@@ -1,8 +1,16 @@
 import { createPublicClient, http } from "viem";
 import { mainnet } from "viem/chains";
 
+// prod stores the full alchemy rpc url (ALCHEMY_API_URL); local dev may store
+// just the key (ALCHEMY_API_KEY). accept either, everywhere.
+function alchemyKeyFromUrl(url: string): string | null {
+  const m = url.match(/\/v2\/([^/?#]+)/);
+  return m ? m[1] : null;
+}
+
 function rpcUrl() {
   if (process.env.MAINNET_RPC_URL) return process.env.MAINNET_RPC_URL;
+  if (process.env.ALCHEMY_API_URL) return process.env.ALCHEMY_API_URL;
   if (process.env.ALCHEMY_API_KEY) {
     return `https://eth-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`;
   }
@@ -44,6 +52,10 @@ export async function fetchTokenMetadata(uri: string): Promise<Response> {
 
 export function alchemyNftKey() {
   if (process.env.ALCHEMY_API_KEY) return process.env.ALCHEMY_API_KEY;
+  if (process.env.ALCHEMY_API_URL) {
+    const key = alchemyKeyFromUrl(process.env.ALCHEMY_API_URL);
+    if (key) return key;
+  }
   if (process.env.NODE_ENV === "development") return "demo";
   return null;
 }
