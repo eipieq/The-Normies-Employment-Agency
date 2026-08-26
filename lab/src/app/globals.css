@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+/* arpi lab — inherits the employment agency's "quiet utility" system:
+   neutral surfaces, indigo accent, 900 titles / 500 secondary.
+   the lab reads a half-step more serious than the product: more mono,
+   more rule lines, less rounding. */
+
+:root {
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.205 0 0);
+  --muted: oklch(0.961 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --border: oklch(0.922 0 0);
+  --primary: oklch(0.52 0.22 264);
+  --radius: 0.625rem;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-primary: var(--primary);
+  --font-sans: var(--font-instrument-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-pixel-square: var(--font-pixel-square);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-instrument-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.011em;
+}
+
+.font-pixel-square {
+  font-family: var(--font-pixel-square), monospace;
+}
+
+/* small-caps section label used throughout the lab pages */
+.label {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+
+/* measured prose column for research/methodology copy */
+.prose-lab p {
+  color: oklch(0.45 0 0);
+  line-height: 1.75;
+}
+.prose-lab p + p {
+  margin-top: 1rem;
+}

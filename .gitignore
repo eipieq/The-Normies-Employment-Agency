@@ -28,3 +28,8 @@ coverage
 
 # claude code per-session state (the project memory at ~/.claude/projects/... lives outside the repo on purpose)
 .claude/local
+
+# lab site
+lab/node_modules
+lab/.next
+lab/.vercel
