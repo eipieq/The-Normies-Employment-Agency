@@ -25,17 +25,17 @@ async function loadExample(collection: CollectionSlug, id: number) {
 }
 
 export default async function Home() {
-  let tokenEntries: { collection: CollectionSlug; tokenId: number }[] = [];
+  const cached = await listCachedTokens();
+  let tokenEntries: { collection: CollectionSlug; tokenId: number }[] =
+    shuffle(cached).slice(0, MARQUEE_COUNT);
 
-  if (process.env.NODE_ENV !== "development") {
-    const cached = await listCachedTokens();
-    if (cached.length > 0) {
-      tokenEntries = shuffle(cached).slice(0, MARQUEE_COUNT);
-    } else {
-      tokenEntries = Object.entries(HOMEPAGE_EXAMPLES).flatMap(([collection, ids]) =>
-        (ids as number[]).map((id) => ({ collection: collection as CollectionSlug, tokenId: id })),
-      );
-    }
+  // fall back to the curated list only in prod: in dev those tokens are usually
+  // uncached, so loading them would mean live api calls + persona generation on
+  // every homepage hit. dev shows whatever is already cached, or nothing.
+  if (tokenEntries.length === 0 && process.env.NODE_ENV !== "development") {
+    tokenEntries = Object.entries(HOMEPAGE_EXAMPLES).flatMap(([collection, ids]) =>
+      (ids as number[]).map((id) => ({ collection: collection as CollectionSlug, tokenId: id })),
+    );
   }
 
   const results = await Promise.allSettled(
