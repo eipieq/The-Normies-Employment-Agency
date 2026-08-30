@@ -79,16 +79,6 @@ async function loadRemotePortrait(src: string): Promise<string> {
   throw last instanceof Error ? last : new Error("portrait fetch failed");
 }
 
-async function loadWordmark(): Promise<string | null> {
-  try {
-    const svg = await readFile(join(process.cwd(), "public/agency-wordmark.svg"));
-    const png = await sharp(svg).resize({ height: 40 }).png().toBuffer();
-    return `data:image/png;base64,${png.toString("base64")}`;
-  } catch {
-    return null;
-  }
-}
-
 async function loadFonts() {
   const [jakarta600, jakarta500, jakarta400, geistMono] = await Promise.all([
     fetch("https://fonts.bunny.net/plus-jakarta-sans/files/plus-jakarta-sans-latin-600-normal.woff").then((r) =>
@@ -131,9 +121,8 @@ export async function renderEmploymentCard({
   oneLiner,
   idLabel,
 }: CardInput): Promise<ImageResponse> {
-  const [{ src, kind }, wordmark, fonts] = await Promise.all([
+  const [{ src, kind }, fonts] = await Promise.all([
     resolvePortraitUrl(portrait),
-    loadWordmark(),
     loadFonts(),
   ]);
 
@@ -188,14 +177,20 @@ export async function renderEmploymentCard({
             padding: `48px ${PAD_X}px 52px`,
           }}
         >
-          {wordmark ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={wordmark} alt="" width={188} height={40} style={{ opacity: 0.28 }} />
-          ) : (
-            <span style={{ fontSize: 14, color: "#d4d4d4", letterSpacing: "-0.01em" }}>
-              the employment agency
-            </span>
-          )}
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              fontWeight: 500,
+              fontSize: 15,
+              color: "#c4c4c4",
+              letterSpacing: "-0.01em",
+              lineHeight: 1.15,
+            }}
+          >
+            <span>the employment</span>
+            <span>agency</span>
+          </div>
 
           <div style={{ display: "flex", flexDirection: "column", gap: 18, width: TEXT_W }}>
             <div

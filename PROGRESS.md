@@ -6,6 +6,22 @@ format: date, agent, what shipped, what's next, blockers.
 
 ---
 
+## 2026-08-30 (cursor) — downloadable premium employment card png
+
+shipped:
+
+- dedicated 4:5 export at `/collections/{collection}/works/{id}/card.png` (1080x1350). existing 1200x630 og unfurls untouched.
+- designed artifact: portrait/art, job title, one-liner, token id, "the employment agency" mark, "on file".
+- pixel portraits nearest-neighbor scaled via sharp. azuki art cover-cropped into the art panel. title/one-liner sizes step down for long copy.
+- card page: **download** always saves the png. **share** uses web share api with the file when supported, else downloads then opens an x intent with caption.
+- verified locally: normie #1, azuki #1, long title (#100), sparse pixels (#7), 404s, homepage still lists azuki.
+
+next: none queued for this. worth a visual pass on a real x mobile post once it's in prod.
+
+blockers: none.
+
+---
+
 ## 2026-08-01 (cursor) — /chats page: all conversations in one place
 
 shipped:

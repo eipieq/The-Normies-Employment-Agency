@@ -86,7 +86,7 @@ export function EmploymentCard({
           </p>
         </div>
 
-        <div className="bg-neutral-50 rounded-t-[5px] rounded-b-[10px] p-3.5 flex items-center justify-between">
+        <div className="bg-neutral-50 rounded-t-[5px] rounded-b-[10px] p-3.5 flex flex-wrap items-center justify-between gap-2">
           <ShareButton
             collection={collection.slug}
             label={collection.label}

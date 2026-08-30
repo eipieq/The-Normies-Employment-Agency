@@ -95,7 +95,7 @@ export function ShareButton({ collection, label, tokenId, jobTitle, oneLiner }: 
           type="button"
           onClick={download}
           disabled={busy !== null}
-          className="inline-flex items-center gap-1.5 rounded-md border border-black/10 bg-white px-3 py-1.5 text-sm font-medium text-neutral-900 transition-colors hover:bg-neutral-50 disabled:opacity-50"
+          className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-black/10 bg-white px-3 py-1.5 text-sm font-medium text-neutral-900 transition-colors hover:bg-neutral-50 disabled:opacity-50"
         >
           {busy === "download" ? (
             <Spinner size={20} weight="regular" className="animate-spin" />
@@ -108,13 +108,13 @@ export function ShareButton({ collection, label, tokenId, jobTitle, oneLiner }: 
           type="button"
           onClick={share}
           disabled={busy !== null}
-          className="inline-flex items-center gap-1.5 rounded-md bg-black px-3 py-1.5 text-sm font-medium text-white transition-opacity hover:opacity-80 disabled:opacity-50"
+          className="inline-flex shrink-0 items-center gap-1.5 rounded-md bg-black px-3 py-1.5 text-sm font-medium text-white transition-opacity hover:opacity-80 disabled:opacity-50"
         >
           {busy === "share" ? (
             <Spinner size={20} weight="regular" className="animate-spin" />
           ) : (
             <>
-              Share on
+              Share
               <svg width="13" height="13" viewBox="0 0 1200 1227" fill="currentColor" aria-hidden="true">
                 <path d="M714.163 519.284 1160.89 0h-105.86L667.137 450.887 357.328 0H0l468.492 681.821L0 1226.37h105.866l409.625-476.152 327.181 476.152H1200L714.137 519.284h.026ZM569.165 687.828l-47.468-67.894-377.686-540.24h162.604l304.797 435.991 47.468 67.894 396.2 566.721H892.476L569.165 687.854v-.026Z" />
               </svg>
